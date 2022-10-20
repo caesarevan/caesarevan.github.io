@@ -1,7 +1,7 @@
 const COMMANDS={help:"Supported commands: <span class='code'>about</span>, <span class='code'>experience</span>, <span class='code'>skills</span>, <span class='code'>contact</span>, <span class='code'>secret</span>, <span class='code'>clear</span>.<br><br>",
 
 about:
-"Hello!<br><br>I'm Caesar Evan Santoso, 18 y.o and i'm a <u><i>Penetration Tester</i></u> & <u><i>Bug Hunter</i></u><br><br>",
+"Hello!<br><br>I'm Caesar Evan Santoso, i'm a <u><i>Penetration Tester</i></u> & <u><i>Part Time Bug Bounty Hunter</i></u><br><br>",
 
 skills:
 "Penetration Testing [Website/Mobile Application]<br><br>",
