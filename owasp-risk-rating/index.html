@@ -228,8 +228,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>OWASP Risk Rating Calculatorssss</h1>
-  
+    <h1>OWASP Risk Rating Calculator</h1>
     <div class="radar-wrap">
       <div class="radar-footer">
         <span class="lf-tag">Likelihood Factor:</span>
@@ -249,7 +248,6 @@
         </a>
       </div>
     </div>
-  
     <div class="row row-section g-2">
       <div class="col-12 col-md-6">
         <h6 class="group-title">Likelihood Factors</h6>
@@ -270,7 +268,6 @@
           </div>
         </div>
       </div>
-  
       <div class="col-12 col-md-6">
         <h6 class="group-title">Impact Factors</h6>
         <div class="card">
@@ -291,7 +288,6 @@
         </div>
       </div>
     </div>
-  
     <div class="row row-section g-2">
       <div class="col-12 col-md-6">
         <div class="card">
@@ -311,7 +307,6 @@
           </div>
         </div>
       </div>
-  
       <div class="col-12 col-md-6">
         <div class="card">
           <h5>Business Impact Factors</h5>
@@ -331,11 +326,9 @@
         </div>
       </div>
     </div>
-  
     <div class="text-center mt-2">
       <button id="resetBtn" class="btn">Reset</button>
     </div>
-  
     <div class="text-center mt-5">
       <label for="explainer" style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.3rem; display: block;">
         Pilih Kategori Penjelasan
@@ -344,17 +337,22 @@
         <option value="">Pilih kategori</option>
       </select>
     </div>
-  
     <div class="example-note">
       List penjelasan :
     </div>
-  
     <div class="footer-note">
       Powered by OWASP Risk Rating Methodology — Business Impact Dominant
     </div>
   </div>
-  
+
   <script>
+    // ✅ Fungsi encode aman untuk query string — hanya encode karakter berbahaya
+    function encodeQuerySafe(str) {
+      return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
+        return '%' + char.charCodeAt(0).toString(16).padStart(2, '0');
+      });
+    }
+
     function getWeight(id){
       const val = Number(document.getElementById(id).value);
       return val * 0.25;
@@ -404,16 +402,17 @@
     function buildScoreVector() {
       const entries = [];
       for (const [field, code] of Object.entries(fieldToCode)) {
-        const value = document.getElementById(field).value || 0;
+        const value = document.getElementById(field)?.value || 0;
         entries.push(`${code}:${value}`);
       }
       return entries.join('/');
     }
     function updateUrlWithScoreVector() {
       const vector = buildScoreVector();
-      const newUrl = `${window.location.origin}${window.location.pathname}?owasp-risk-rating=${encodeURIComponent(vector)}`;
+      const newUrl = `${window.location.origin}${window.location.pathname}?owasp-risk-rating=${encodeQuerySafe(vector)}`;
       window.history.replaceState({ vector }, '', newUrl);
     }
+
     function populate(id, arr){
       const sel=document.getElementById(id);
       sel.innerHTML='';
@@ -425,7 +424,7 @@
         sel.appendChild(opt);
       }
     }
-  
+
     const skillOpts = [
       [0,'N/A','opt-blue'],
       [1,'Security penetration skills','opt-blue'],
@@ -537,14 +536,14 @@
       [7,'Thousands of people','opt-red'],
       [9,'Millions of people','opt-darkred']
     ];
-  
+
     const allOpts={
       skill:skillOpts,motive:motiveOpts,opportunity:opportunityOpts,size:sizeOpts,
       discovery:discoveryOpts,exploit:exploitOpts,awareness:awarenessOpts,detection:detectionOpts,
       confidentiality:confidentialityOpts,integrity:integrityOpts,availability:availabilityOpts,accountability:accountabilityOpts,
       financial:financialOpts,reputation:reputationOpts,noncompliance:noncomplianceOpts,privacy:privacyOpts
     };
-  
+
     const explanations = {
       motive: {
         1: "Ancaman berasal dari individu tanpa insentif finansial atau motivasi teknis yang jelas seperti anak remaja yang mencoba eksploitasi karena rasa penasaran atau “hacking for fun”. Risiko rendah karena tidak terorganisir dan tidak berkelanjutan.",
@@ -553,7 +552,7 @@
       },
       skill: {
         1: "Pelaku memiliki keterampilan penetration testing profesional mampu mengeksploitasi kerentanan kompleks tanpa bantuan alat otomatis. Biasanya berasal dari kelompok keamanan atau penjahat cyber berpengalaman.",
-        3: "elaku memahami jaringan dan pemrograman dasar mampu memanfaatkan kerentanan umum seperti SQLi atau XSS. Umumnya adalah developer atau admin yang beralih ke penyalahgunaan.",
+        3: "Pelaku memahami jaringan dan pemrograman dasar mampu memanfaatkan kerentanan umum seperti SQLi atau XSS. Umumnya adalah developer atau admin yang beralih ke penyalahgunaan.",
         5: "Pelaku adalah pengguna komputer biasa yang tahu cara menjalankan alat eksploitasi siap pakai (seperti Metasploit). Tidak memahami kode, tapi bisa mengeksekusi serangan otomatis.",
         6: "Pelaku memiliki sedikit pengetahuan teknis mungkin hanya tahu cara mengklik link berbahaya atau mengirim email phishing. Sering menjadi bagian dari serangan skala besar (spray-and-pray).",
         9: "Pelaku sama sekali tidak memiliki keterampilan teknis mungkin hanya membuka email phishing atau memasukkan password lemah. Ancaman ini sangat umum, tapi tidak terarah."
@@ -643,14 +642,14 @@
         9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skandal besar, dengan konsekuensi hukum, politik, dan sosial."
       }
     };
-  
+
     for(const id in allOpts) populate(id,allOpts[id]);
-  
+
     const threatIds=['skill','motive','opportunity','size'];
     const vulnIds=['discovery','exploit','awareness','detection'];
     const techIds=['confidentiality','integrity','availability','accountability'];
     const bizIds=['financial','reputation','noncompliance','privacy'];
-  
+
     const fieldToCode = {
       skill: 'SL',
       motive: 'M',
@@ -669,12 +668,12 @@
       noncompliance: 'NC',
       privacy: 'PV'
     };
-  
+
     const codeToField = {};
     for (const [field, code] of Object.entries(fieldToCode)) {
       codeToField[code] = field;
     }
-  
+
     function calculate(){
       const tafSum = sumWeight(threatIds);
       const vfSum = sumWeight(vulnIds);
@@ -682,7 +681,7 @@
       const tifSum = sumWeight(techIds);
       const bifSum = sumWeight(bizIds);
       const ifVal = bifSum;
-  
+
       const tafLabel = document.getElementById('tafLabel');
       const vfLabel = document.getElementById('vfLabel');
       const tifLabel = document.getElementById('tifLabel');
@@ -690,7 +689,7 @@
       const lfLabelCenter = document.getElementById('lfLabelCenter');
       const ifLabelCenter = document.getElementById('ifLabelCenter');
       const riskSeverityLabel = document.getElementById('riskSeverityLabel');
-  
+
       const tafLevel = scoreLabelSum(tafSum);
       const vfLevel = scoreLabelSum(vfSum);
       const tifLevel = scoreLabelSum(tifSum);
@@ -698,7 +697,7 @@
       const lfLevel = scoreLabelSum(lf);
       const ifLevel = scoreLabelSum(ifVal);
       const overallRisk = calculateOverallRisk(lf, ifVal);
-  
+
       tafLabel.textContent = `${tafLevel} (TAF: ${formatNum(tafSum)})`;
       vfLabel.textContent = `${vfLevel} (VF: ${formatNum(vfSum)})`;
       tifLabel.textContent = `${tifLevel} (TIF: ${formatNum(tifSum)})`;
@@ -706,7 +705,7 @@
       lfLabelCenter.textContent = `${lfLevel} (LF: ${formatNum(lf)})`;
       ifLabelCenter.textContent = `${ifLevel} (IF: ${formatNum(ifVal)})`;
       riskSeverityLabel.textContent = overallRisk;
-  
+
       tafLabel.className = 'result-line risk-' + tafLevel.toLowerCase().replace(' ', '-');
       vfLabel.className = 'result-line risk-' + vfLevel.toLowerCase().replace(' ', '-');
       tifLabel.className = 'result-line risk-' + tifLevel.toLowerCase().replace(' ', '-');
@@ -714,18 +713,17 @@
       lfLabelCenter.className = 'risk-' + lfLevel.toLowerCase().replace(' ', '-');
       ifLabelCenter.className = 'risk-' + ifLevel.toLowerCase().replace(' ', '-');
       riskSeverityLabel.className = 'risk-' + overallRisk.toLowerCase().replace(' ', '-');
-  
+
       const scoreVector = buildScoreVector();
       const link = document.getElementById('scoreVectorLink');
       link.textContent = scoreVector;
-      link.href = `?owasp-risk-rating=${encodeURIComponent(scoreVector)}`;
+      link.href = `?owasp-risk-rating=${encodeQuerySafe(scoreVector)}`; // ✅ FIXED: TIDAK ADA ENCODEURI_COMPONENT
       updateUrlWithScoreVector();
     }
-  
+
     function populateExplainer() {
       const explainer = document.getElementById('explainer');
       explainer.innerHTML = '<option value="">Pilih kategori</option>';
-  
       const mapping = {
         skill: 'Skill level',
         motive: 'Motive',
@@ -744,7 +742,6 @@
         noncompliance: 'Non-compliance',
         privacy: 'Privacy Violation'
       };
-  
       for (const [key, label] of Object.entries(mapping)) {
         const opt = document.createElement('option');
         opt.value = key;
@@ -752,19 +749,16 @@
         explainer.appendChild(opt);
       }
     }
-  
+
     function updateExampleNoteFromExplainer() {
       const explainer = document.getElementById('explainer');
       const exampleNote = document.querySelector('.example-note');
-  
       if (!explainer || !exampleNote) return;
-  
       const selected = explainer.value;
       if (!selected) {
         exampleNote.textContent = '^-^';
         return;
       }
-  
       const fieldMapping = {
         skill: skillOpts,
         motive: motiveOpts,
@@ -783,15 +777,12 @@
         noncompliance: noncomplianceOpts,
         privacy: privacyOpts
       };
-  
       const opts = fieldMapping[selected];
       if (!opts) {
         exampleNote.textContent = 'List penjelasan :';
         return;
       }
-  
       const explainerMap = explanations[selected] || {};
-  
       let lines = [`${selected === 'noncompliance' ? 'Non-compliance' : selected === 'privacy' ? 'Privacy Violation' :
         selected === 'skill' ? 'Skill level' : selected === 'size' ? 'Size (Population)' :
         selected === 'financial' ? 'Financial Damage' : selected === 'reputation' ? 'Reputation Damage' :
@@ -799,41 +790,38 @@
         selected === 'availability' ? 'Loss of Availability' : selected === 'accountability' ? 'Loss of Accountability' :
         selected === 'discovery' ? 'Ease of discovery' : selected === 'exploit' ? 'Ease of exploit' :
         selected === 'awareness' ? 'Awareness' : selected === 'detection' ? 'Intrusion detection' : selected}`];
-  
       for (const [value, desc] of opts) {
         if (value === 0 && desc === 'N/A') continue;
-  
         lines.push(`${value} - ${desc}`);
         if (explainerMap[value]) {
           lines.push(`${explainerMap[value]}`);
         }
       }
-  
       exampleNote.textContent = lines.join('\n');
     }
-  
+
     document.getElementById('explainer').addEventListener('change', updateExampleNoteFromExplainer);
 
     populateExplainer();
     updateExampleNoteFromExplainer();
-  
+
     [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener('change', () => {
         calculate();
       });
     });
-  
+
     document.getElementById('resetBtn').addEventListener('click', () => {
       [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => document.getElementById(id).value = 0);
       calculate();
     });
-  
+
     window.addEventListener('load', () => {
       parseScoreVectorFromUrl();
       calculate();
     });
-  
+
     calculate();
   </script>
 </body>
