@@ -346,7 +346,6 @@
   </div>
 
   <script>
-    // ✅ Fungsi encode aman untuk query string — hanya encode karakter berbahaya
     function encodeQuerySafe(str) {
       return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
         return '%' + char.charCodeAt(0).toString(16).padStart(2, '0');
@@ -386,9 +385,12 @@
       if (lfLevel === 'High' && ifLevel === 'High') return 'Critical';
       return 'None';
     }
+
     function parseScoreVectorFromUrl() {
-      const urlParams = new URLSearchParams(window.location.search.substring(1));
-      const vectorStr = urlParams.get('owasp-risk-rating');
+      const hash = window.location.hash.substring(1);
+      if (!hash) return;
+      const params = new URLSearchParams(hash);
+      const vectorStr = params.get('owasp-risk-rating');
       if (!vectorStr) return;
       const pairs = vectorStr.split('/');
       for (const pair of pairs) {
@@ -399,6 +401,7 @@
         }
       }
     }
+
     function buildScoreVector() {
       const entries = [];
       for (const [field, code] of Object.entries(fieldToCode)) {
@@ -407,10 +410,12 @@
       }
       return entries.join('/');
     }
+
     function updateUrlWithScoreVector() {
       const vector = buildScoreVector();
-      const newUrl = `${window.location.origin}${window.location.pathname}?owasp-risk-rating=${encodeQuerySafe(vector)}`;
-      window.history.replaceState({ vector }, '', newUrl);
+      const encodedVector = encodeQuerySafe(vector);
+      const newHash = `#owasp-risk-rating=${encodedVector}`;
+      window.location.hash = newHash; 
     }
 
     function populate(id, arr){
@@ -717,7 +722,7 @@
       const scoreVector = buildScoreVector();
       const link = document.getElementById('scoreVectorLink');
       link.textContent = scoreVector;
-      link.href = `?owasp-risk-rating=${encodeQuerySafe(scoreVector)}`; // ✅ FIXED: TIDAK ADA ENCODEURI_COMPONENT
+      link.href = `#owasp-risk-rating=${encodeQuerySafe(scoreVector)}`;
       updateUrlWithScoreVector();
     }
 
@@ -818,6 +823,11 @@
     });
 
     window.addEventListener('load', () => {
+      parseScoreVectorFromUrl();
+      calculate();
+    });
+
+    window.addEventListener('hashchange', () => {
       parseScoreVectorFromUrl();
       calculate();
     });
