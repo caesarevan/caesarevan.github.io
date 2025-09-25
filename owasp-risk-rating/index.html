@@ -437,8 +437,7 @@
       }
       return entries.join('/');
     }
-
-    // ✅ UPDATE URL DENGAN HASH — HAPUS QUERY STRING SECARA EKSPLISIT
+    
     function updateUrlWithScoreVector() {
       const vector = buildScoreVector();
       const encodedVector = encodeQuerySafe(vector);
