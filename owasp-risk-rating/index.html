@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OWASP Risk Assessment Calculator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text-primary: #333;
+      --text-secondary: #666;
+      --accent: #000000;
+      --border: #e0e0e0;
+      --bg: #ffffff;
+      --card-bg: #ffffff;
+      --border-radius: 6px;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background-color: #ffffff;
+      color: var(--text-primary);
+      font-size: 12px;
+      line-height: 1.4;
+      padding: 0.8rem 0.5rem 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    h1 {
+      font-weight: 600;
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.05px;
+      text-align: center;
+      padding-bottom: 0.2rem;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+      background: var(--card-bg);
+      margin-bottom: 0.7rem;
+      box-shadow: none;
+      padding: 0.6rem;
+    }
+    .card h5 {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+    .controls label {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    .form-select {
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.5rem;
+      font-size: 0.75rem;
+      margin-bottom: 0.4rem;
+    }
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: none;
+      outline: 1px solid var(--accent);
+    }
+    .result-line {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      margin-top: 0.4rem;
+      padding: 0.2rem 0.4rem;
+      background-color: #f8f9fa;
+      border-left: 2px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .radar-wrap {
+      max-width: 100%;
+      margin: 1rem auto 1.2rem;
+      text-align: center;
+      padding: 0.7rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--border-radius);
+    }
+    .radar-footer {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .lf-tag, .if-tag {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .radar-footer strong {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+    .risk-severity {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .risk-severity strong {
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      min-width: 75px;
+      text-align: center;
+    }
+    .risk-none { background-color: #d4edda; color: #155724; }
+    .risk-low { background-color: #d1e7ff; color: #084298; }
+    .risk-medium { background-color: #fff3cd; color: #856404; }
+    .risk-high { background-color: #f8d7da; color: #721c24; }
+    .risk-critical { background-color: #7f1d1d; color: #ffffff; }
+    .owasp-risk-rating {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .owasp-risk-rating a {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.2rem 0.5rem;
+      background: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      word-break: break-all;
+    }
+    .owasp-risk-rating a:hover {
+      background: #f0f0f0;
+      text-decoration: underline;
+    }
+    #resetBtn {
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      letter-spacing: -0.02px;
+      transition: background 0.2s;
+    }
+    #resetBtn:hover {
+      background: #f8f9fa;
+      color: var(--text-primary);
+    }
+    .group-title {
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--text-primary);
+      letter-spacing: -0.02px;
+      padding: 0.2rem 0;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .row-section {
+      margin-bottom: 1rem;
+    }
+    .row-section:last-child {
+      margin-bottom: 0.8rem;
+    }
+    .example-note {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 4rem auto;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 2px solid var(--accent);
+      line-height: 2.0;
+      max-width: 100%;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .footer-note {
+      font-size: 0.7rem;
+      color: #999;
+      text-align: center;
+      margin-top: 0.3rem;
+      margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 0.7rem 0.5rem 1.2rem;
+        font-size: 11px;
+      }
+      h1 { font-size: 0.85rem; padding-bottom: 0.15rem; }
+      .card { padding: 0.5rem; }
+      .controls label, .form-select, .result-line, .owasp-risk-rating span, #resetBtn, .example-note {
+        font-size: 0.7rem !important;
+        padding: 0.15rem 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+      }
+      .radar-wrap { padding: 0.6rem; }
+      .radar-footer, .risk-severity, .owasp-risk-rating {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>OWASP Risk Rating Calculator</h1>
+    <div class="radar-wrap">
+      <div class="radar-footer">
+        <span class="lf-tag">Likelihood Factor:</span>
+        <strong id="lfLabelCenter" class="risk-none">None</strong>
+        <span> | </span>
+        <span class="if-tag">Impact Factor:</span>
+        <strong id="ifLabelCenter" class="risk-none">None</strong>
+      </div>
+      <div class="risk-severity">
+        Overall Risk Severity:
+        <strong id="riskSeverityLabel" class="risk-none">None</strong>
+      </div>
+      <div class="owasp-risk-rating">
+        Score Vector:
+        <a href="#" id="scoreVectorLink" target="_blank">
+          SL:0/M:0/O:0/S:0/ED:0/EE:0/A:0/ID:0/LC:0/LI:0/LAV:0/LAC:0/FD:0/RD:0/NC:0/PV:0
+        </a>
+      </div>
+    </div>
+    <div class="row row-section g-2">
+      <div class="col-12 col-md-6">
+        <h6 class="group-title">Likelihood Factors</h6>
+        <div class="card">
+          <h5>Threat Agent Factors</h5>
+          <div class="controls">
+            <label>Skill level</label>
+            <select id="skill" class="form-select"></select>
+            <label>Motive</label>
+            <select id="motive" class="form-select"></select>
+            <label>Opportunity</label>
+            <select id="opportunity" class="form-select"></select>
+            <label>Size (Population)</label>
+            <select id="size" class="form-select"></select>
+          </div>
+          <div class="mt-1">
+            Threat Agent Factor: <span id="tafLabel" class="result-line risk-none">None (TAF: 0)</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <h6 class="group-title">Impact Factors</h6>
+        <div class="card">
+          <h5>Technical Impact Factors</h5>
+          <div class="controls">
+            <label>Loss of Confidentiality</label>
+            <select id="confidentiality" class="form-select"></select>
+            <label>Loss of Integrity</label>
+            <select id="integrity" class="form-select"></select>
+            <label>Loss of Availability</label>
+            <select id="availability" class="form-select"></select>
+            <label>Loss of Accountability</label>
+            <select id="accountability" class="form-select"></select>
+          </div>
+          <div class="mt-1">
+            Technical Impact Factor: <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row row-section g-2">
+      <div class="col-12 col-md-6">
+        <div class="card">
+          <h5>Vulnerability Factors</h5>
+          <div class="controls">
+            <label>Ease of discovery</label>
+            <select id="discovery" class="form-select"></select>
+            <label>Ease of exploit</label>
+            <select id="exploit" class="form-select"></select>
+            <label>Awareness</label>
+            <select id="awareness" class="form-select"></select>
+            <label>Intrusion detection</label>
+            <select id="detection" class="form-select"></select>
+          </div>
+          <div class="mt-1">
+            Vulnerability Factor: <span id="vfLabel" class="result-line risk-none">None (VF: 0)</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="card">
+          <h5>Business Impact Factors</h5>
+          <div class="controls">
+            <label>Financial Damage</label>
+            <select id="financial" class="form-select"></select>
+            <label>Reputation Damage</label>
+            <select id="reputation" class="form-select"></select>
+            <label>Non-compliance</label>
+            <select id="noncompliance" class="form-select"></select>
+            <label>Privacy Violation</label>
+            <select id="privacy" class="form-select"></select>
+          </div>
+          <div class="mt-1">
+            Business Impact Factor: <span id="bifLabel" class="result-line risk-none">None (BIF: 0)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-2">
+      <button id="resetBtn" class="btn">Reset</button>
+    </div>
+    <div class="text-center mt-5">
+      <label for="explainer" style="font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.3rem; display: block;">
+        Pilih Kategori Penjelasan
+      </label>
+      <select id="explainer" class="form-select" style="font-size: 0.75rem; max-width: 150px; margin: 0 auto;">
+        <option value="">Pilih kategori</option>
+      </select>
+    </div>
+    <div class="example-note">
+      List penjelasan :
+    </div>
+    <div class="footer-note">
+      Powered by OWASP Risk Rating Methodology — Business Impact Dominant
+    </div>
+  </div>
+
+  <script>
+    // ✅ Fungsi encode aman untuk query string — hanya encode karakter berbahaya
+    function encodeQuerySafe(str) {
+      return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
+        return '%' + char.charCodeAt(0).toString(16).padStart(2, '0');
+      });
+    }
+
+    function getWeight(id){
+      const val = Number(document.getElementById(id).value);
+      return val * 0.25;
+    }
+    function sumWeight(ids){
+      return ids.reduce((s,id) => s + getWeight(id), 0);
+    }
+    function scoreLabelSum(w){
+      if (w === 0) return 'None';
+      if (w >= 6.00) return 'High';
+      if (w >= 3.00) return 'Medium';
+      if (w > 0) return 'Low';
+      return 'None';
+    }
+    function formatNum(n){ return parseFloat(n.toFixed(3)).toString(); }
+    function calculateOverallRisk(lf, ifVal) {
+      let lfLevel = 'Low';
+      if (lf >= 6.00) lfLevel = 'High';
+      else if (lf >= 3.00) lfLevel = 'Medium';
+      let ifLevel = 'Low';
+      if (ifVal >= 6.00) ifLevel = 'High';
+      else if (ifVal >= 3.00) ifLevel = 'Medium';
+      if (lfLevel === 'Low' && ifLevel === 'Low') return 'None';
+      if (lfLevel === 'Low' && ifLevel === 'Medium') return 'Low';
+      if (lfLevel === 'Low' && ifLevel === 'High') return 'Medium';
+      if (lfLevel === 'Medium' && ifLevel === 'Low') return 'Low';
+      if (lfLevel === 'Medium' && ifLevel === 'Medium') return 'Medium';
+      if (lfLevel === 'Medium' && ifLevel === 'High') return 'High';
+      if (lfLevel === 'High' && ifLevel === 'Low') return 'Medium';
+      if (lfLevel === 'High' && ifLevel === 'Medium') return 'High';
+      if (lfLevel === 'High' && ifLevel === 'High') return 'Critical';
+      return 'None';
+    }
+    function parseScoreVectorFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search.substring(1));
+      const vectorStr = urlParams.get('owasp-risk-rating');
+      if (!vectorStr) return;
+      const pairs = vectorStr.split('/');
+      for (const pair of pairs) {
+        const [code, value] = pair.split(':');
+        const field = codeToField[code];
+        if (field && document.getElementById(field)) {
+          document.getElementById(field).value = value;
+        }
+      }
+    }
+    function buildScoreVector() {
+      const entries = [];
+      for (const [field, code] of Object.entries(fieldToCode)) {
+        const value = document.getElementById(field)?.value || 0;
+        entries.push(`${code}:${value}`);
+      }
+      return entries.join('/');
+    }
+    function updateUrlWithScoreVector() {
+      const vector = buildScoreVector();
+      const newUrl = `${window.location.origin}${window.location.pathname}?owasp-risk-rating=${encodeQuerySafe(vector)}`;
+      window.history.replaceState({ vector }, '', newUrl);
+    }
+
+    function populate(id, arr){
+      const sel=document.getElementById(id);
+      sel.innerHTML='';
+      for(const [num,desc,cls] of arr){
+        const opt=document.createElement('option');
+        opt.value=num;
+        opt.textContent = `${num} - ${desc}`;
+        if(cls) opt.className=cls;
+        sel.appendChild(opt);
+      }
+    }
+
+    const skillOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Security penetration skills','opt-blue'],
+      [3,'Network and programming skill','opt-green'],
+      [5,'advanced computer user','opt-orange'],
+      [6,'some technical skill','opt-red'],
+      [9,'no technical skills','opt-darkred']
+    ];
+    const motiveOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'low or no reward','opt-blue'],
+      [4,'Possible reward','opt-orange'],
+      [9,'High reward','opt-darkred']
+    ];
+    const opportunityOpts = [
+      [0,'Full access or expensive resources required','opt-blue'],
+      [4,'special access or resources required','opt-orange'],
+      [7,'some access or resources required','opt-red'],
+      [9,'no access or resources required','opt-darkred']
+    ];
+    const sizeOpts = [
+      [0,'N/A','opt-blue'],
+      [2,'Developer or system administrators','opt-green'],
+      [4,'Intranet users','opt-orange'],
+      [5,'Partners','opt-orange'],
+      [6,'Authenticated users','opt-red'],
+      [9,'Anonymous Internet users','opt-darkred']
+    ];
+    const discoveryOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Practically impossible','opt-blue'],
+      [3,'Difficult','opt-green'],
+      [7,'Easy','opt-orange'],
+      [9,'Automated tools available','opt-darkred']
+    ];
+    const exploitOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Theoretical','opt-blue'],
+      [3,'Difficult','opt-green'],
+      [5,'Easy','opt-orange'],
+      [9,'Automated tools available','opt-darkred']
+    ];
+    const awarenessOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Unknown','opt-blue'],
+      [4,'Hidden','opt-orange'],
+      [6,'Obvious','opt-red'],
+      [9,'Public knowledge','opt-darkred']
+    ];
+    const detectionOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Active detection in application','opt-blue'],
+      [3,'Logged and reviewed','opt-green'],
+      [8,'Logged without review','opt-darkred'],
+      [9,'Not logged','opt-darkred']
+    ];
+    const confidentialityOpts = [
+      [0,'N/A','opt-blue'],
+      [2,'Minimal non-sensitive data disclosed','opt-green'],
+      [6,'Minimal critical data or extensive non-sensitive data disclosed','opt-orange'],
+      [7,'Extensive critical data disclosed','opt-red'],
+      [9,'All data disclosed','opt-darkred']
+    ];
+    const integrityOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Minimal slightly corrupt data','opt-blue'],
+      [3,'Minimal seriously corrupt data','opt-green'],
+      [5,'Extensive slightly corrupt data','opt-orange'],
+      [7,'Extensive seriously corrupt data','opt-red'],
+      [9,'All data totally corrupt','opt-darkred']
+    ];
+    const availabilityOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Minimal secondary services interrupted','opt-blue'],
+      [5,'Minimal primary or extensive secondary services interrupted','opt-orange'],
+      [7,'Extensive primary services interrupted','opt-red'],
+      [9,'All services completely lost','opt-darkred']
+    ];
+    const accountabilityOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Fully traceable','opt-blue'],
+      [7,'Possibly traceable','opt-red'],
+      [9,'Completely anonymous','opt-darkred']
+    ];
+    const financialOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Less than the cost to fix the vulnerability','opt-blue'],
+      [3,'Minor effect on annual profit','opt-green'],
+      [7,'Significant effect on annual profit','opt-red'],
+      [9,'Bankruptcy','opt-darkred']
+    ];
+    const reputationOpts = [
+      [0,'N/A','opt-blue'],
+      [1,'Minimal damage','opt-blue'],
+      [4,'Loss of major accounts','opt-orange'],
+      [5,'Loss of goodwill','opt-red'],
+      [9,'Brand damage','opt-darkred']
+    ];
+    const noncomplianceOpts = [
+      [0,'N/A','opt-blue'],
+      [2,'Minor violation','opt-green'],
+      [5,'Clear violation','opt-orange'],
+      [7,'High profile violation','opt-red']
+    ];
+    const privacyOpts = [
+      [0,'N/A','opt-blue'],
+      [3,'One individual','opt-green'],
+      [5,'Hundreds of people','opt-orange'],
+      [7,'Thousands of people','opt-red'],
+      [9,'Millions of people','opt-darkred']
+    ];
+
+    const allOpts={
+      skill:skillOpts,motive:motiveOpts,opportunity:opportunityOpts,size:sizeOpts,
+      discovery:discoveryOpts,exploit:exploitOpts,awareness:awarenessOpts,detection:detectionOpts,
+      confidentiality:confidentialityOpts,integrity:integrityOpts,availability:availabilityOpts,accountability:accountabilityOpts,
+      financial:financialOpts,reputation:reputationOpts,noncompliance:noncomplianceOpts,privacy:privacyOpts
+    };
+
+    const explanations = {
+      motive: {
+        1: "Ancaman berasal dari individu tanpa insentif finansial atau motivasi teknis yang jelas seperti anak remaja yang mencoba eksploitasi karena rasa penasaran atau “hacking for fun”. Risiko rendah karena tidak terorganisir dan tidak berkelanjutan.",
+        4: "Pelaku memiliki potensi keuntungan seperti pencurian data untuk dijual di dark web, atau akses ilegal untuk mendapatkan keuntungan finansial jangka pendek. Motivasi ini lebih serius dan sering terlihat pada serangan terarah (targeted attacks).",
+        9: "Ancaman berasal dari organisasi kriminal, negara, atau kelompok bersenjata yang memiliki sumber daya besar dan tujuan strategis seperti pencurian intelijen, perusakan infrastruktur kritis, atau serangan ransomware berskala besar. Ini adalah ancaman tingkat ekstrem yang memerlukan respons keamanan tinggi."
+      },
+      skill: {
+        1: "Pelaku memiliki keterampilan penetration testing profesional mampu mengeksploitasi kerentanan kompleks tanpa bantuan alat otomatis. Biasanya berasal dari kelompok keamanan atau penjahat cyber berpengalaman.",
+        3: "Pelaku memahami jaringan dan pemrograman dasar mampu memanfaatkan kerentanan umum seperti SQLi atau XSS. Umumnya adalah developer atau admin yang beralih ke penyalahgunaan.",
+        5: "Pelaku adalah pengguna komputer biasa yang tahu cara menjalankan alat eksploitasi siap pakai (seperti Metasploit). Tidak memahami kode, tapi bisa mengeksekusi serangan otomatis.",
+        6: "Pelaku memiliki sedikit pengetahuan teknis mungkin hanya tahu cara mengklik link berbahaya atau mengirim email phishing. Sering menjadi bagian dari serangan skala besar (spray-and-pray).",
+        9: "Pelaku sama sekali tidak memiliki keterampilan teknis mungkin hanya membuka email phishing atau memasukkan password lemah. Ancaman ini sangat umum, tapi tidak terarah."
+      },
+      opportunity: {
+        0: "Serangan memerlukan akses fisik, jaringan internal, atau sumber daya mahal seperti server lokal atau kredensial admin. Sangat sulit diakses oleh pihak luar.",
+        4: "Pelaku memerlukan akses khusus seperti login sebagai pengguna biasa, atau koneksi ke jaringan tertentu. Masih memerlukan usaha signifikan untuk mencapai target.",
+        7: "Pelaku memerlukan akses dasar seperti koneksi internet publik. Tidak perlu otorisasi khusus. Ini adalah tingkat ancaman yang paling umum di internet.",
+        9: "Tidak ada hambatan akses serangan bisa dilakukan dari mana saja, tanpa autentikasi. Ini adalah kondisi paling berbahaya: sistem terbuka sepenuhnya."
+      },
+      size: {
+        2: "Ancaman hanya datang dari kelompok kecil seperti admin sistem atau developer internal. Jumlah pelaku terbatas, dan biasanya terkendali oleh kebijakan organisasi.",
+        4: "Ancaman datang dari pengguna internal seperti karyawan atau staf. Mereka memiliki akses terbatas, tapi jumlahnya cukup besar untuk meningkatkan risiko kebocoran.",
+        5: "Ancaman berasal dari mitra bisnis, vendor, atau pihak eksternal yang memiliki akses terbatas ke sistem. Kontrol akses mungkin lemah, meningkatkan risiko insider threat.",
+        6: "Ancaman datang dari pengguna yang telah diautentikasi seperti pelanggan yang login ke sistem. Jumlahnya besar, dan setiap akun bisa menjadi pintu masuk.",
+        9: "Ancaman datang dari siapa saja di internet tanpa autentikasi. Ini adalah skenario paling berbahaya: sistem terbuka untuk semua, termasuk penyerang global."
+      },
+      discovery: {
+        1: "Kerentanan sangat tersembunyi tidak terdeteksi oleh alat otomatis, memerlukan analisis manual mendalam, atau hanya ada di kode yang tidak terdokumentasi. Sangat sulit ditemukan.",
+        3: "Kerentanan memerlukan upaya teknis untuk ditemukan seperti scanning khusus, reverse engineering, atau pengujian manual. Tidak terdeteksi oleh alat standar.",
+        7: "Kerentanan mudah ditemukan dengan alat otomatis (seperti Nikto, Burp Suite, atau OWASP ZAP). Banyak dokumentasi publik tentang cara menemukannya.",
+        9: "Kerentanan sangat terkenal telah diumumkan di CVE, ada exploit publik, dan alat otomatis langsung bisa mendeteksi. Ini adalah kerentanan yang paling berbahaya karena dimanfaatkan massal."
+      },
+      exploit: {
+        1: "Eksploitasi hanya mungkin secara teoretis tidak ada bukti praktis, dan memerlukan kondisi langka. Tidak ada alat yang tersedia, dan eksploitasi memerlukan keahlian tingkat tinggi.",
+        3: "Eksploitasi sulit memerlukan penyesuaian khusus, waktu lama, atau kombinasi beberapa teknik. Tidak ada exploit publik, dan hanya ahli yang bisa melakukannya.",
+        5: "Eksploitasi mudah ada script publik, tutorial online, dan alat siap pakai. Tidak memerlukan keahlian tinggi, tapi tetap memerlukan sedikit usaha.",
+        9: "Eksploitasi otomatis tersedia sebagai exploit code di GitHub, Metasploit, atau dark web. Siapa pun bisa menjalankannya dalam hitungan detik tanpa pengetahuan teknis."
+      },
+      awareness: {
+        1: "Kerentanan tidak diketahui publik bahkan oleh vendor. Ini adalah zero-day yang sangat berbahaya, karena tidak ada patch atau mitigasi yang tersedia.",
+        4: "Kerentanan diketahui oleh sebagian kecil komunitas mungkin hanya di kalangan peneliti keamanan. Belum ada dokumentasi publik luas.",
+        6: "Kerentanan diketahui oleh banyak pengembang dan admin mungkin ada peringatan internal, tapi belum dipublikasikan. Risiko tinggi karena banyak yang tahu, tapi belum diperbaiki.",
+        9: "Kerentanan sangat terkenal ada artikel, video, dan forum publik membahasnya. Vendor telah merilis patch, tapi banyak sistem belum diperbarui. Ini adalah ancaman paling umum."
+      },
+      detection: {
+        1: "Sistem memiliki deteksi aktif seperti WAF, IDS, atau SIEM yang langsung memblokir dan mengirim notifikasi. Serangan akan langsung terdeteksi dan dihentikan.",
+        3: "Aktivitas dicatat dan ditinjau secara berkala seperti log audit yang diperiksa harian. Serangan bisa terdeteksi, tapi tidak secara real-time.",
+        8: "Aktivitas dicatat, tapi tidak ditinjau log hanya disimpan, tanpa analisis. Serangan bisa terjadi tanpa diketahui selama berbulan-bulan.",
+        9: "Tidak ada logging sama sekali tidak ada jejak aktivitas. Serangan bisa terjadi tanpa jejak, dan tidak akan pernah diketahui kecuali kerusakan terlihat."
+      },
+      confidentiality: {
+        2: "Hanya data non-sensitif yang terbocor seperti nama pengguna atau ID yang tidak terkait identitas. Tidak ada risiko hukum atau reputasi.",
+        6: "Data sensitif terbocor seperti email, nomor telepon, atau riwayat aktivitas. Bisa digunakan untuk phishing atau social engineering. Berisiko pelanggaran GDPR/privasi.",
+        7: "Data kritis terbocor seperti password hash, token akses, atau dokumen internal. Ini bisa menjadi pintu masuk ke sistem lain atau bahan untuk serangan lanjutan.",
+        9: "Semua data terbocor termasuk database pelanggan, dokumen rahasia, dan informasi keuangan. Ini adalah kebocoran terburuk yang bisa terjadi."
+      },
+      integrity: {
+        1: "Data mengalami perubahan kecil seperti typo di halaman web. Tidak memengaruhi fungsionalitas atau kepercayaan pengguna.",
+        3: "Beberapa data kritis rusak seperti saldo akun salah atau konfigurasi sistem berubah. Bisa menyebabkan gangguan operasional kecil.",
+        5: "Banyak data rusak seperti riwayat transaksi atau log sistem yang dimodifikasi. Ini bisa menyebabkan ketidakpercayaan pengguna dan biaya pemulihan tinggi.",
+        7: "Data kritis rusak secara luas seperti database pelanggan, konfigurasi firewall, atau sistem autentikasi. Ini bisa menyebabkan kegagalan sistem besar.",
+        9: "Semua data rusak total tidak ada cara untuk memulihkan keadaan semula tanpa backup. Ini adalah serangan seperti ransomware atau wiping."
+      },
+      availability: {
+        1: "Layanan sekunder terganggu seperti fitur non-inti (chatbot, notifikasi). Tidak memengaruhi operasi utama.",
+        5: "Layanan utama terganggu sementara seperti website down selama beberapa jam. Memengaruhi produktivitas dan pendapatan, tapi bisa pulih cepat.",
+        7: "Layanan utama terganggu lama seperti sistem pembayaran atau login down selama berhari-hari. Menyebabkan kerugian finansial besar dan kehilangan pelanggan.",
+        9: "Semua layanan hilang total server dimatikan, data dihapus, sistem tidak bisa diakses. Ini adalah serangan seperti DDoS massal atau ransomware tanpa kunci."
+      },
+      accountability: {
+        1: "Semua akses dilacak log lengkap, audit trail tersedia, dan aktivitas bisa dikaitkan ke individu. Tidak ada anonimitas.",
+        7: "Beberapa akses bisa dilacak tapi ada celah dalam log. Mungkin hanya IP yang tercatat, bukan pengguna. Sulit menentukan siapa pelaku sebenarnya.",
+        9: "Tidak ada jejak semua aktivitas dilakukan secara anonim, atau sistem tidak mencatat sama sekali. Ini memungkinkan serangan tanpa konsekuensi."
+      },
+      financial: {
+        1: "Biaya perbaikan lebih besar daripada kerugian seperti mengganti password atau memperbaiki halaman web. Tidak berdampak finansial signifikan.",
+        3: "Kerugian kecil seperti biaya tambahan untuk audit atau pemberitahuan pelanggan. Tidak memengaruhi profit tahunan.",
+        7: "Kerugian besar seperti denda regulasi, biaya pemulihan, atau kehilangan pendapatan selama downtime. Bisa memengaruhi laba bersih secara signifikan.",
+        9: "Kerugian mengancam kelangsungan hidup seperti kebangkrutan, tuntutan hukum massal, atau kehilangan lisensi bisnis. Ini adalah risiko yang tidak bisa ditoleransi."
+      },
+      reputation: {
+        1: "Dampak minimal seperti satu keluhan pelanggan. Tidak ada publikasi media atau kehilangan kepercayaan.",
+        4: "Kehilangan pelanggan utama seperti klien besar yang membatalkan kontrak. Mempengaruhi pendapatan jangka panjang.",
+        5: "Kehilangan kepercayaan publik pelanggan mulai ragu, media membahasnya, dan reputasi brand tercoreng. Sulit dipulihkan tanpa kampanye PR besar.",
+        9: "Kerusakan merek permanen nama perusahaan dikaitkan dengan keamanan buruk. Investor menarik dana, karyawan keluar, dan pasar menghindari produk."
+      },
+      noncompliance: {
+        2: "Pelanggaran kecil seperti tidak memenuhi satu poin dalam kebijakan internal. Tidak ada sanksi hukum, hanya peringatan.",
+        5: "Pelanggaran jelas seperti melanggar GDPR, HIPAA, atau PCI-DSS. Bisa mengakibatkan denda dan audit wajib.",
+        7: "Pelanggaran berita utama seperti kebocoran data jutaan pelanggan yang dilaporkan media. Ini menyebabkan investigasi pemerintah dan reputasi hancur."
+      },
+      privacy: {
+        3: "Data satu individu terbocor seperti nama dan email. Risiko rendah, tapi bisa menjadi pelanggaran privasi jika tidak dilaporkan.",
+        5: "Ratusan orang terdampak seperti data karyawan atau pelanggan kecil. Bisa memicu laporan ke otoritas privasi dan tuntutan hukum.",
+        7: "Ribuan orang terdampak seperti data pelanggan layanan online. Ini memicu investigasi regulator dan kehilangan kepercayaan publik.",
+        9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skandal besar, dengan konsekuensi hukum, politik, dan sosial."
+      }
+    };
+
+    for(const id in allOpts) populate(id,allOpts[id]);
+
+    const threatIds=['skill','motive','opportunity','size'];
+    const vulnIds=['discovery','exploit','awareness','detection'];
+    const techIds=['confidentiality','integrity','availability','accountability'];
+    const bizIds=['financial','reputation','noncompliance','privacy'];
+
+    const fieldToCode = {
+      skill: 'SL',
+      motive: 'M',
+      opportunity: 'O',
+      size: 'S',
+      discovery: 'ED',
+      exploit: 'EE',
+      awareness: 'A',
+      detection: 'ID',
+      confidentiality: 'LC',
+      integrity: 'LI',
+      availability: 'LAV',
+      accountability: 'LAC',
+      financial: 'FD',
+      reputation: 'RD',
+      noncompliance: 'NC',
+      privacy: 'PV'
+    };
+
+    const codeToField = {};
+    for (const [field, code] of Object.entries(fieldToCode)) {
+      codeToField[code] = field;
+    }
+
+    function calculate(){
+      const tafSum = sumWeight(threatIds);
+      const vfSum = sumWeight(vulnIds);
+      const lf = (tafSum + vfSum) / 2;
+      const tifSum = sumWeight(techIds);
+      const bifSum = sumWeight(bizIds);
+      const ifVal = bifSum;
+
+      const tafLabel = document.getElementById('tafLabel');
+      const vfLabel = document.getElementById('vfLabel');
+      const tifLabel = document.getElementById('tifLabel');
+      const bifLabel = document.getElementById('bifLabel');
+      const lfLabelCenter = document.getElementById('lfLabelCenter');
+      const ifLabelCenter = document.getElementById('ifLabelCenter');
+      const riskSeverityLabel = document.getElementById('riskSeverityLabel');
+
+      const tafLevel = scoreLabelSum(tafSum);
+      const vfLevel = scoreLabelSum(vfSum);
+      const tifLevel = scoreLabelSum(tifSum);
+      const bifLevel = scoreLabelSum(bifSum);
+      const lfLevel = scoreLabelSum(lf);
+      const ifLevel = scoreLabelSum(ifVal);
+      const overallRisk = calculateOverallRisk(lf, ifVal);
+
+      tafLabel.textContent = `${tafLevel} (TAF: ${formatNum(tafSum)})`;
+      vfLabel.textContent = `${vfLevel} (VF: ${formatNum(vfSum)})`;
+      tifLabel.textContent = `${tifLevel} (TIF: ${formatNum(tifSum)})`;
+      bifLabel.textContent = `${bifLevel} (BIF: ${formatNum(bifSum)})`;
+      lfLabelCenter.textContent = `${lfLevel} (LF: ${formatNum(lf)})`;
+      ifLabelCenter.textContent = `${ifLevel} (IF: ${formatNum(ifVal)})`;
+      riskSeverityLabel.textContent = overallRisk;
+
+      tafLabel.className = 'result-line risk-' + tafLevel.toLowerCase().replace(' ', '-');
+      vfLabel.className = 'result-line risk-' + vfLevel.toLowerCase().replace(' ', '-');
+      tifLabel.className = 'result-line risk-' + tifLevel.toLowerCase().replace(' ', '-');
+      bifLabel.className = 'result-line risk-' + bifLevel.toLowerCase().replace(' ', '-');
+      lfLabelCenter.className = 'risk-' + lfLevel.toLowerCase().replace(' ', '-');
+      ifLabelCenter.className = 'risk-' + ifLevel.toLowerCase().replace(' ', '-');
+      riskSeverityLabel.className = 'risk-' + overallRisk.toLowerCase().replace(' ', '-');
+
+      const scoreVector = buildScoreVector();
+      const link = document.getElementById('scoreVectorLink');
+      link.textContent = scoreVector;
+      link.href = `?owasp-risk-rating=${encodeQuerySafe(scoreVector)}`; // ✅ FIXED: TIDAK ADA ENCODEURI_COMPONENT
+      updateUrlWithScoreVector();
+    }
+
+    function populateExplainer() {
+      const explainer = document.getElementById('explainer');
+      explainer.innerHTML = '<option value="">Pilih kategori</option>';
+      const mapping = {
+        skill: 'Skill level',
+        motive: 'Motive',
+        opportunity: 'Opportunity',
+        size: 'Size (Population)',
+        discovery: 'Ease of discovery',
+        exploit: 'Ease of exploit',
+        awareness: 'Awareness',
+        detection: 'Intrusion detection',
+        confidentiality: 'Loss of Confidentiality',
+        integrity: 'Loss of Integrity',
+        availability: 'Loss of Availability',
+        accountability: 'Loss of Accountability',
+        financial: 'Financial Damage',
+        reputation: 'Reputation Damage',
+        noncompliance: 'Non-compliance',
+        privacy: 'Privacy Violation'
+      };
+      for (const [key, label] of Object.entries(mapping)) {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = label;
+        explainer.appendChild(opt);
+      }
+    }
+
+    function updateExampleNoteFromExplainer() {
+      const explainer = document.getElementById('explainer');
+      const exampleNote = document.querySelector('.example-note');
+      if (!explainer || !exampleNote) return;
+      const selected = explainer.value;
+      if (!selected) {
+        exampleNote.textContent = '^-^';
+        return;
+      }
+      const fieldMapping = {
+        skill: skillOpts,
+        motive: motiveOpts,
+        opportunity: opportunityOpts,
+        size: sizeOpts,
+        discovery: discoveryOpts,
+        exploit: exploitOpts,
+        awareness: awarenessOpts,
+        detection: detectionOpts,
+        confidentiality: confidentialityOpts,
+        integrity: integrityOpts,
+        availability: availabilityOpts,
+        accountability: accountabilityOpts,
+        financial: financialOpts,
+        reputation: reputationOpts,
+        noncompliance: noncomplianceOpts,
+        privacy: privacyOpts
+      };
+      const opts = fieldMapping[selected];
+      if (!opts) {
+        exampleNote.textContent = 'List penjelasan :';
+        return;
+      }
+      const explainerMap = explanations[selected] || {};
+      let lines = [`${selected === 'noncompliance' ? 'Non-compliance' : selected === 'privacy' ? 'Privacy Violation' :
+        selected === 'skill' ? 'Skill level' : selected === 'size' ? 'Size (Population)' :
+        selected === 'financial' ? 'Financial Damage' : selected === 'reputation' ? 'Reputation Damage' :
+        selected === 'confidentiality' ? 'Loss of Confidentiality' : selected === 'integrity' ? 'Loss of Integrity' :
+        selected === 'availability' ? 'Loss of Availability' : selected === 'accountability' ? 'Loss of Accountability' :
+        selected === 'discovery' ? 'Ease of discovery' : selected === 'exploit' ? 'Ease of exploit' :
+        selected === 'awareness' ? 'Awareness' : selected === 'detection' ? 'Intrusion detection' : selected}`];
+      for (const [value, desc] of opts) {
+        if (value === 0 && desc === 'N/A') continue;
+        lines.push(`${value} - ${desc}`);
+        if (explainerMap[value]) {
+          lines.push(`${explainerMap[value]}`);
+        }
+      }
+      exampleNote.textContent = lines.join('\n');
+    }
+
+    document.getElementById('explainer').addEventListener('change', updateExampleNoteFromExplainer);
+
+    populateExplainer();
+    updateExampleNoteFromExplainer();
+
+    [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('change', () => {
+        calculate();
+      });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => document.getElementById(id).value = 0);
+      calculate();
+    });
+
+    window.addEventListener('load', () => {
+      parseScoreVectorFromUrl();
+      calculate();
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
