@@ -389,17 +389,44 @@
     function parseScoreVectorFromUrl() {
       const hash = window.location.hash.substring(1);
       if (!hash) return;
+
       const params = new URLSearchParams(hash);
       const vectorStr = params.get('owasp-risk-rating');
       if (!vectorStr) return;
+
       const pairs = vectorStr.split('/');
-      for (const pair of pairs) {
-        const [code, value] = pair.split(':');
-        const field = codeToField[code];
-        if (field && document.getElementById(field)) {
-          document.getElementById(field).value = value;
+      let retries = 0;
+      const maxRetries = 10;
+      const interval = 100; // ms
+
+      function trySetValues() {
+        let allFound = true;
+        for (const pair of pairs) {
+          const [code, value] = pair.split(':');
+          const field = codeToField[code];
+          if (!field) continue;
+          const el = document.getElementById(field);
+          if (!el) {
+            allFound = false;
+            break;
+          }
+          el.value = value;
+        }
+
+        if (allFound) {
+          calculate(); 
+          return;
+        }
+
+        if (retries < maxRetries) {
+          retries++;
+          setTimeout(trySetValues, interval);
+        } else {
+          console.warn('Failed to set values from hash after 10 retries. Check DOM.');
         }
       }
+
+      trySetValues();
     }
 
     function buildScoreVector() {
@@ -411,11 +438,12 @@
       return entries.join('/');
     }
 
+    // ✅ UPDATE URL DENGAN HASH — HAPUS QUERY STRING SECARA EKSPLISIT
     function updateUrlWithScoreVector() {
       const vector = buildScoreVector();
       const encodedVector = encodeQuerySafe(vector);
       const newHash = `#owasp-risk-rating=${encodedVector}`;
-      window.location.hash = newHash; 
+      window.location.replace(window.location.origin + window.location.pathname + newHash);
     }
 
     function populate(id, arr){
@@ -822,17 +850,80 @@
       calculate();
     });
 
-    window.addEventListener('load', () => {
+    if (window.location.search) {
+      window.location.replace(window.location.origin + window.location.pathname);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
       parseScoreVectorFromUrl();
-      calculate();
     });
 
     window.addEventListener('hashchange', () => {
       parseScoreVectorFromUrl();
-      calculate();
     });
 
-    calculate();
+    function updateUrlWithScoreVector() {
+      const vector = buildScoreVector();
+      const encodedVector = encodeQuerySafe(vector);
+      const newHash = `#owasp-risk-rating=${encodedVector}`;
+      window.location.replace(window.location.origin + window.location.pathname + newHash);
+    }
+
+    function parseScoreVectorFromUrl() {
+      const hash = window.location.hash.substring(1); // hapus '#'
+      if (!hash) return;
+
+      const params = new URLSearchParams(hash);
+      const vectorStr = params.get('owasp-risk-rating');
+      if (!vectorStr) return;
+
+      const pairs = vectorStr.split('/');
+      let retries = 0;
+      const maxRetries = 10;
+      const interval = 100; // ms
+
+      function trySetValues() {
+        let allFound = true;
+        for (const pair of pairs) {
+          const [code, value] = pair.split(':');
+          const field = codeToField[code];
+          if (!field) continue;
+          const el = document.getElementById(field);
+          if (!el) {
+            allFound = false;
+            break;
+          }
+          el.value = value;
+        }
+
+        if (allFound) {
+          calculate();
+          return;
+        }
+
+        if (retries < maxRetries) {
+          retries++;
+          setTimeout(trySetValues, interval);
+        } else {
+          console.warn('Failed to set values from hash after 10 retries. Check DOM.');
+        }
+      }
+
+      trySetValues();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        parseScoreVectorFromUrl();
+      });
+    } else {
+      parseScoreVectorFromUrl();
+    }
+
+    setTimeout(() => {
+      if (!document.getElementById('skill')) return;
+      parseScoreVectorFromUrl();
+    }, 2000);
   </script>
 </body>
 </html>
