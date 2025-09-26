@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OWASP Risk Assessment Calculator</title>
+  <meta name="description" content="OWASP Risk Rating Calculator" />
+  <meta name="keywords" content="OWASP Risk Assessment, OWASP Risk Rating Calculator, OWASP Risk Rating Tool" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:site_name" content="OWASP Risk Rating Calculator" />
+  <title>OWASP Risk Rating Calculator</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -131,45 +135,109 @@
     .risk-medium { background-color: #fff3cd; color: #856404; }
     .risk-high { background-color: #f8d7da; color: #721c24; }
     .risk-critical { background-color: #7f1d1d; color: #ffffff; }
+    
     .owasp-risk-rating {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+      text-align: center;
       margin-top: 0.6rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.3rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      line-height: 1.6;
+      padding: 0.4rem 0;
     }
-    .owasp-risk-rating a {
+    .vector-label {
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      color: var(--text-primary);
+      display: block;
+      letter-spacing: -0.01px;
+    }
+    .vector-link {
+      display: inline-block;
       font-family: 'Courier New', Courier, monospace;
       font-size: 0.75rem;
       color: var(--accent);
       text-decoration: none;
-      padding: 0.2rem 0.5rem;
       background: #f8f9fa;
+      padding: 0.3rem 0.6rem;
       border: 1px solid var(--border);
-      border-radius: 3px;
+      border-radius: 4px;
+      margin: 0 auto;
+      max-width: 100%;
       word-break: break-all;
+      box-sizing: border-box;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      cursor: pointer;
+      user-select: all;
     }
-    .owasp-risk-rating a:hover {
-      background: #f0f0f0;
+    .vector-link:hover {
+      background: #e9ecef;
+      color: #000000;
       text-decoration: underline;
     }
-    #resetBtn {
+    .vector-tooltip {
+      font-size: 0.65rem;
+      color: #888;
+      margin-top: 0.3rem;
+      display: inline-block;
+      vertical-align: middle;
       font-weight: 500;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-secondary);
-      border-radius: 4px;
-      padding: 0.3rem 0.8rem;
-      font-size: 0.75rem;
-      letter-spacing: -0.02px;
-      transition: background 0.2s;
+      line-height: 1;
+      padding: 0.1rem 0.3rem;
+      border-radius: 50%;
+      background: #f0f0f0;
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      cursor: help;
     }
-    #resetBtn:hover {
-      background: #f8f9fa;
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 0.7rem 0.5rem 1.2rem;
+        font-size: 11px;
+      }
+      h1 { font-size: 0.85rem; padding-bottom: 0.15rem; }
+      .card { padding: 0.5rem; }
+      .controls label, .form-select, .result-line, .owasp-risk-rating .vector-label, .vector-link, #resetBtn, .example-note {
+        font-size: 0.7rem !important;
+        padding: 0.15rem 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+      }
+      .radar-wrap { padding: 0.6rem; }
+      .radar-footer, .risk-severity, .owasp-risk-rating {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+      }
+      .vector-link {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        margin-bottom: 0.3rem;
+      }
+      .vector-tooltip {
+        font-size: 0.6rem;
+        margin-top: 0.2rem;
+        width: 14px;
+        height: 14px;
+      }
+      .owasp-risk-rating {
+        margin-top: 0.5rem;
+        padding: 0.3rem 0;
+      }
+    }
+  
+    .group-header {
+      margin: 1.5rem 0 0.8rem 0;
+      font-weight: 600;
+      font-size: 2rem;
       color: var(--text-primary);
+      letter-spacing: -0.01px;
+      text-align: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.6rem;
     }
+  
     .group-title {
       font-weight: 600;
       font-size: 1.4rem;
@@ -205,24 +273,20 @@
       margin-top: 0.3rem;
       margin-bottom: 0.5rem;
     }
-    @media (max-width: 768px) {
-      body {
-        padding: 0.7rem 0.5rem 1.2rem;
-        font-size: 11px;
-      }
-      h1 { font-size: 0.85rem; padding-bottom: 0.15rem; }
-      .card { padding: 0.5rem; }
-      .controls label, .form-select, .result-line, .owasp-risk-rating span, #resetBtn, .example-note {
-        font-size: 0.7rem !important;
-        padding: 0.15rem 0.3rem !important;
-        margin-bottom: 0.3rem !important;
-      }
-      .radar-wrap { padding: 0.6rem; }
-      .radar-footer, .risk-severity, .owasp-risk-rating {
-        flex-direction: column;
-        gap: 0.2rem;
-        align-items: center;
-      }
+    #resetBtn {
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      letter-spacing: -0.02px;
+      transition: background 0.2s;
+    }
+    #resetBtn:hover {
+      background: #f8f9fa;
+      color: var(--text-primary);
     }
   </style>
 </head>
@@ -241,16 +305,25 @@
         Overall Risk Severity:
         <strong id="riskSeverityLabel" class="risk-none">None</strong>
       </div>
+
       <div class="owasp-risk-rating">
-        Score Vector:
-        <a href="#" id="scoreVectorLink" target="_blank">
+        <div class="vector-label"></div>
+        <a href="#" id="scoreVectorLink" target="_blank" class="vector-link">
           SL:0/M:0/O:0/S:0/ED:0/EE:0/A:0/ID:0/LC:0/LI:0/LAV:0/LAC:0/FD:0/RD:0/NC:0/PV:0
         </a>
       </div>
+      <div class="owasp-risk-rating">
+        <div class="vector-label"></div>
+        <a href="#owasp-risk-rating-short=0000000000000000" class="vector-link short-vector-link" id="shortVectorLink" target="_self">
+          0000000000000000
+        </a>
+      </div>
     </div>
+
+    <div class="group-header">Likelihood Factors</div>
     <div class="row row-section g-2">
       <div class="col-12 col-md-6">
-        <h6 class="group-title">Likelihood Factors</h6>
+        <h6 class="group-title">Threat Agent Factors</h6>
         <div class="card">
           <h5>Threat Agent Factors</h5>
           <div class="controls">
@@ -269,27 +342,7 @@
         </div>
       </div>
       <div class="col-12 col-md-6">
-        <h6 class="group-title">Impact Factors</h6>
-        <div class="card">
-          <h5>Technical Impact Factors</h5>
-          <div class="controls">
-            <label>Loss of Confidentiality</label>
-            <select id="confidentiality" class="form-select"></select>
-            <label>Loss of Integrity</label>
-            <select id="integrity" class="form-select"></select>
-            <label>Loss of Availability</label>
-            <select id="availability" class="form-select"></select>
-            <label>Loss of Accountability</label>
-            <select id="accountability" class="form-select"></select>
-          </div>
-          <div class="mt-1">
-            Technical Impact Factor: <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row row-section g-2">
-      <div class="col-12 col-md-6">
+        <h6 class="group-title">Vulnerability Factors</h6>
         <div class="card">
           <h5>Vulnerability Factors</h5>
           <div class="controls">
@@ -307,7 +360,32 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- === Group Header Impact Factors === -->
+    <div class="group-header">Impact Factors</div>
+    <div class="row row-section g-2">
       <div class="col-12 col-md-6">
+        <h6 class="group-title">Technical Impact Factors</h6>
+        <div class="card">
+          <h5>Technical Impact Factors</h5>
+          <div class="controls">
+            <label>Loss of Confidentiality</label>
+            <select id="confidentiality" class="form-select"></select>
+            <label>Loss of Integrity</label>
+            <select id="integrity" class="form-select"></select>
+            <label>Loss of Availability</label>
+            <select id="availability" class="form-select"></select>
+            <label>Loss of Accountability</label>
+            <select id="accountability" class="form-select"></select>
+          </div>
+          <div class="mt-1">
+            Technical Impact Factor: <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <h6 class="group-title">Business Impact Factors</h6>
         <div class="card">
           <h5>Business Impact Factors</h5>
           <div class="controls">
@@ -326,6 +404,7 @@
         </div>
       </div>
     </div>
+
     <div class="text-center mt-2">
       <button id="resetBtn" class="btn">Reset</button>
     </div>
@@ -341,17 +420,17 @@
       List penjelasan :
     </div>
     <div class="footer-note">
-      Powered by OWASP Risk Rating Methodology — Business Impact Dominant
+      Powered by OWASP Risk Rating Methodology | PiwPawPaw
     </div>
   </div>
 
   <script>
+    let isInitialLoad = true;
     function encodeQuerySafe(str) {
       return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
         return '%' + char.charCodeAt(0).toString(16).padStart(2, '0');
       });
     }
-
     function getWeight(id){
       const val = Number(document.getElementById(id).value);
       return val * 0.25;
@@ -385,20 +464,16 @@
       if (lfLevel === 'High' && ifLevel === 'High') return 'Critical';
       return 'None';
     }
-
     function parseScoreVectorFromUrl() {
       const hash = window.location.hash.substring(1);
       if (!hash) return;
-
       const params = new URLSearchParams(hash);
       const vectorStr = params.get('owasp-risk-rating');
       if (!vectorStr) return;
-
       const pairs = vectorStr.split('/');
       let retries = 0;
       const maxRetries = 10;
       const interval = 100; // ms
-
       function trySetValues() {
         let allFound = true;
         for (const pair of pairs) {
@@ -412,12 +487,10 @@
           }
           el.value = value;
         }
-
         if (allFound) {
-          calculate(); 
+          calculate();
           return;
         }
-
         if (retries < maxRetries) {
           retries++;
           setTimeout(trySetValues, interval);
@@ -425,10 +498,27 @@
           console.warn('Failed to set values from hash after 10 retries. Check DOM.');
         }
       }
-
       trySetValues();
     }
-
+    function parseShortHashFromUrl() {
+      const hash = window.location.hash.substring(1);
+      if (!hash) return;
+      const params = new URLSearchParams(hash);
+      const shortVector = params.get('owasp-risk-rating-short');
+      if (!shortVector) return;
+      if (shortVector.length !== 16 || !/^\d{16}$/.test(shortVector)) {
+        console.warn('Invalid short vector format. Must be 16 digits.');
+        return;
+      }
+      const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
+      for (let i = 0; i < fields.length; i++) {
+        const field = fields[i];
+        const value = shortVector[i];
+        const el = document.getElementById(field);
+        if (el) el.value = value;
+      }
+      calculate();
+    }
     function buildScoreVector() {
       const entries = [];
       for (const [field, code] of Object.entries(fieldToCode)) {
@@ -437,14 +527,31 @@
       }
       return entries.join('/');
     }
-    
-    function updateUrlWithScoreVector() {
-      const vector = buildScoreVector();
-      const encodedVector = encodeQuerySafe(vector);
-      const newHash = `#owasp-risk-rating=${encodedVector}`;
-      window.location.replace(window.location.origin + window.location.pathname + newHash);
+    function buildShortVector() {
+      const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
+      return fields.map(field => document.getElementById(field)?.value || 0).join('');
     }
-
+    function buildShortHash() {
+      const shortVector = buildShortVector();
+      return `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
+    }
+    function updateUrlWithScoreVector() {
+      const fullVector = buildScoreVector();
+      const encodedFull = encodeQuerySafe(fullVector);
+      const shortVector = buildShortVector();
+      const encodedShort = encodeQuerySafe(shortVector);
+      window.location.replace(window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`);
+      const newShortHash = `#owasp-risk-rating-short=${encodedShort}`;
+      if (window.location.hash !== newShortHash) {
+        window.history.replaceState(null, null, newShortHash);
+      }
+    }
+    function updateShortVectorLink() {
+      const shortVector = buildShortVector();
+      const link = document.getElementById('shortVectorLink');
+      link.textContent = shortVector;
+      link.href = `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
+    }
     function populate(id, arr){
       const sel=document.getElementById(id);
       sel.innerHTML='';
@@ -456,7 +563,6 @@
         sel.appendChild(opt);
       }
     }
-
     const skillOpts = [
       [0,'N/A','opt-blue'],
       [1,'Security penetration skills','opt-blue'],
@@ -568,14 +674,12 @@
       [7,'Thousands of people','opt-red'],
       [9,'Millions of people','opt-darkred']
     ];
-
     const allOpts={
       skill:skillOpts,motive:motiveOpts,opportunity:opportunityOpts,size:sizeOpts,
       discovery:discoveryOpts,exploit:exploitOpts,awareness:awarenessOpts,detection:detectionOpts,
       confidentiality:confidentialityOpts,integrity:integrityOpts,availability:availabilityOpts,accountability:accountabilityOpts,
       financial:financialOpts,reputation:reputationOpts,noncompliance:noncomplianceOpts,privacy:privacyOpts
     };
-
     const explanations = {
       motive: {
         1: "Ancaman berasal dari individu tanpa insentif finansial atau motivasi teknis yang jelas seperti anak remaja yang mencoba eksploitasi karena rasa penasaran atau “hacking for fun”. Risiko rendah karena tidak terorganisir dan tidak berkelanjutan.",
@@ -674,14 +778,11 @@
         9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skandal besar, dengan konsekuensi hukum, politik, dan sosial."
       }
     };
-
     for(const id in allOpts) populate(id,allOpts[id]);
-
     const threatIds=['skill','motive','opportunity','size'];
     const vulnIds=['discovery','exploit','awareness','detection'];
     const techIds=['confidentiality','integrity','availability','accountability'];
     const bizIds=['financial','reputation','noncompliance','privacy'];
-
     const fieldToCode = {
       skill: 'SL',
       motive: 'M',
@@ -700,12 +801,10 @@
       noncompliance: 'NC',
       privacy: 'PV'
     };
-
     const codeToField = {};
     for (const [field, code] of Object.entries(fieldToCode)) {
       codeToField[code] = field;
     }
-
     function calculate(){
       const tafSum = sumWeight(threatIds);
       const vfSum = sumWeight(vulnIds);
@@ -713,7 +812,6 @@
       const tifSum = sumWeight(techIds);
       const bifSum = sumWeight(bizIds);
       const ifVal = bifSum;
-
       const tafLabel = document.getElementById('tafLabel');
       const vfLabel = document.getElementById('vfLabel');
       const tifLabel = document.getElementById('tifLabel');
@@ -721,7 +819,6 @@
       const lfLabelCenter = document.getElementById('lfLabelCenter');
       const ifLabelCenter = document.getElementById('ifLabelCenter');
       const riskSeverityLabel = document.getElementById('riskSeverityLabel');
-
       const tafLevel = scoreLabelSum(tafSum);
       const vfLevel = scoreLabelSum(vfSum);
       const tifLevel = scoreLabelSum(tifSum);
@@ -729,7 +826,6 @@
       const lfLevel = scoreLabelSum(lf);
       const ifLevel = scoreLabelSum(ifVal);
       const overallRisk = calculateOverallRisk(lf, ifVal);
-
       tafLabel.textContent = `${tafLevel} (TAF: ${formatNum(tafSum)})`;
       vfLabel.textContent = `${vfLevel} (VF: ${formatNum(vfSum)})`;
       tifLabel.textContent = `${tifLevel} (TIF: ${formatNum(tifSum)})`;
@@ -737,7 +833,6 @@
       lfLabelCenter.textContent = `${lfLevel} (LF: ${formatNum(lf)})`;
       ifLabelCenter.textContent = `${ifLevel} (IF: ${formatNum(ifVal)})`;
       riskSeverityLabel.textContent = overallRisk;
-
       tafLabel.className = 'result-line risk-' + tafLevel.toLowerCase().replace(' ', '-');
       vfLabel.className = 'result-line risk-' + vfLevel.toLowerCase().replace(' ', '-');
       tifLabel.className = 'result-line risk-' + tifLevel.toLowerCase().replace(' ', '-');
@@ -745,14 +840,12 @@
       lfLabelCenter.className = 'risk-' + lfLevel.toLowerCase().replace(' ', '-');
       ifLabelCenter.className = 'risk-' + ifLevel.toLowerCase().replace(' ', '-');
       riskSeverityLabel.className = 'risk-' + overallRisk.toLowerCase().replace(' ', '-');
-
       const scoreVector = buildScoreVector();
       const link = document.getElementById('scoreVectorLink');
       link.textContent = scoreVector;
       link.href = `#owasp-risk-rating=${encodeQuerySafe(scoreVector)}`;
-      updateUrlWithScoreVector();
+      updateShortVectorLink();
     }
-
     function populateExplainer() {
       const explainer = document.getElementById('explainer');
       explainer.innerHTML = '<option value="">Pilih kategori</option>';
@@ -781,7 +874,6 @@
         explainer.appendChild(opt);
       }
     }
-
     function updateExampleNoteFromExplainer() {
       const explainer = document.getElementById('explainer');
       const exampleNote = document.querySelector('.example-note');
@@ -831,98 +923,62 @@
       }
       exampleNote.textContent = lines.join('\n');
     }
-
     document.getElementById('explainer').addEventListener('change', updateExampleNoteFromExplainer);
-
     populateExplainer();
     updateExampleNoteFromExplainer();
-
     [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener('change', () => {
         calculate();
+        if (!isInitialLoad) {
+          updateUrlWithScoreVector();
+        }
       });
     });
-
     document.getElementById('resetBtn').addEventListener('click', () => {
       [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => document.getElementById(id).value = 0);
       calculate();
+      if (!isInitialLoad) {
+        updateUrlWithScoreVector();
+      }
     });
-
     if (window.location.search) {
       window.location.replace(window.location.origin + window.location.pathname);
     }
-
     document.addEventListener('DOMContentLoaded', () => {
       parseScoreVectorFromUrl();
+      parseShortHashFromUrl();
+      isInitialLoad = false;
     });
-
     window.addEventListener('hashchange', () => {
       parseScoreVectorFromUrl();
+      parseShortHashFromUrl();
     });
-
+    function buildShortVector() {
+      const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
+      return fields.map(field => document.getElementById(field)?.value || 0).join('');
+    }
+    function updateShortVectorLink() {
+      const shortVector = buildShortVector();
+      const link = document.getElementById('shortVectorLink');
+      link.textContent = shortVector;
+      link.href = `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
+    }
+    function buildShortHash() {
+      const shortVector = buildShortVector();
+      return `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
+    }
     function updateUrlWithScoreVector() {
-      const vector = buildScoreVector();
-      const encodedVector = encodeQuerySafe(vector);
-      const newHash = `#owasp-risk-rating=${encodedVector}`;
-      window.location.replace(window.location.origin + window.location.pathname + newHash);
-    }
-
-    function parseScoreVectorFromUrl() {
-      const hash = window.location.hash.substring(1); // hapus '#'
-      if (!hash) return;
-
-      const params = new URLSearchParams(hash);
-      const vectorStr = params.get('owasp-risk-rating');
-      if (!vectorStr) return;
-
-      const pairs = vectorStr.split('/');
-      let retries = 0;
-      const maxRetries = 10;
-      const interval = 100; // ms
-
-      function trySetValues() {
-        let allFound = true;
-        for (const pair of pairs) {
-          const [code, value] = pair.split(':');
-          const field = codeToField[code];
-          if (!field) continue;
-          const el = document.getElementById(field);
-          if (!el) {
-            allFound = false;
-            break;
-          }
-          el.value = value;
-        }
-
-        if (allFound) {
-          calculate();
-          return;
-        }
-
-        if (retries < maxRetries) {
-          retries++;
-          setTimeout(trySetValues, interval);
-        } else {
-          console.warn('Failed to set values from hash after 10 retries. Check DOM.');
-        }
+      const fullVector = buildScoreVector();
+      const encodedFull = encodeQuerySafe(fullVector);
+      const shortVector = buildShortVector();
+      const encodedShort = encodeQuerySafe(shortVector);
+      window.location.replace(window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`);
+      const newShortHash = `#owasp-risk-rating-short=${encodedShort}`;
+      if (window.location.hash !== newShortHash) {
+        window.history.replaceState(null, null, newShortHash);
       }
-
-      trySetValues();
     }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        parseScoreVectorFromUrl();
-      });
-    } else {
-      parseScoreVectorFromUrl();
-    }
-
-    setTimeout(() => {
-      if (!document.getElementById('skill')) return;
-      parseScoreVectorFromUrl();
-    }, 2000);
   </script>
 </body>
 </html>
