@@ -7,6 +7,7 @@
   <meta name="keywords" content="OWASP Risk Assessment, OWASP Risk Rating Calculator, OWASP Risk Rating Tool" />
   <meta name="robots" content="index, follow" />
   <meta property="og:site_name" content="OWASP Risk Rating Calculator" />
+  <meta name="color-scheme" content="light dark">
   <title>OWASP Risk Rating Calculator</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,7 +22,106 @@
       --border-radius: 8px;
       --base-font-size: 16px;
     }
-
+    :root[data-mode="dark"] {
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b0b0;
+      --accent: #ffffff;
+      --border: #333333;
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+    }
+    [data-mode="dark"] body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+    }
+    [data-mode="dark"] .card {
+      border-color: var(--border);
+      background: var(--card-bg);
+    }
+    [data-mode="dark"] .form-select {
+      border-color: var(--border);
+      background-color: #2a2a2a;
+      color: var(--text-primary);
+    }
+    [data-mode="dark"] .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: none;
+      outline: 1px solid var(--accent);
+    }
+    [data-mode="dark"] .result-line {
+      background-color: #2a2a2a;
+      border-left-color: var(--accent);
+    }
+    [data-mode="dark"] .radar-wrap {
+      border-color: var(--border);
+      background: var(--bg);
+      box-shadow: 0 1px 4px rgba(255,255,255,0.05);
+    }
+    [data-mode="dark"] .owasp-risk-rating .vector-link {
+      background: #2a2a2a;
+      border-color: var(--border);
+      color: var(--accent);
+    }
+    [data-mode="dark"] .owasp-risk-rating .vector-link:hover {
+      background: #3a3a3a;
+      color: #ffffff;
+      text-decoration: underline;
+    }
+    [data-mode="dark"] .risk-none { background-color: #2a2a2a; color: #b0b0b0; }
+    [data-mode="dark"] .risk-low { background-color: #1a2a4a; color: #60a5fa; }
+    [data-mode="dark"] .risk-medium { background-color: #4a3a1a; color: #fbbf24; }
+    [data-mode="dark"] .risk-high { background-color: #4a1a1a; color: #f87171; }
+    [data-mode="dark"] .risk-critical { background-color: #7f1d1d; color: #ffffff; }
+    [data-mode="dark"] .group-header {
+      border-bottom-color: var(--border);
+    }
+    [data-mode="dark"] .example-note {
+      background: #2a2a2a;
+      border-left-color: var(--accent);
+      color: var(--text-primary);
+    }
+    [data-mode="dark"] .footer-note {
+      color: #666666;
+    }
+    [data-mode="dark"] #resetBtn {
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    [data-mode="dark"] #resetBtn:hover {
+      background: #2a2a2a;
+      color: var(--text-primary);
+    }
+    [data-mode="dark"] .vector-tooltip {
+      background: #3a3a3a;
+      color: #b0b0b0;
+    }
+    .dark-mode-toggle {
+      position: absolute;
+      top: 1.2rem;
+      right: 1rem;
+      z-index: 100;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    [data-mode="dark"] .dark-mode-toggle {
+      color: var(--text-primary);
+    }
+    .dark-mode-toggle:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--accent);
+    }
+    [data-mode="dark"] .dark-mode-toggle:hover {
+      background: rgba(255,255,255,0.1);
+    }
     body {
       font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
       background-color: var(--bg);
@@ -33,8 +133,8 @@
       margin: 0 auto;
       overflow-x: hidden;
       min-height: 100vh;
+      position: relative;
     }
-
     h1 {
       font-weight: 700;
       font-size: 2.5rem;
@@ -44,7 +144,6 @@
       text-align: center;
       padding-bottom: 0.3rem;
     }
-
     .card {
       border: 1px solid var(--border);
       border-radius: var(--border-radius);
@@ -53,14 +152,12 @@
       box-shadow: none;
       padding: 0.8rem;
     }
-
     .card h5 {
       font-weight: 600;
       font-size: 1rem;
       color: var(--text-primary);
       margin-bottom: 0.5rem;
     }
-
     .controls label {
       display: block;
       margin-bottom: 0.3rem;
@@ -68,7 +165,6 @@
       font-size: 0.875rem;
       color: var(--text-secondary);
     }
-
     .form-select {
       border-radius: 6px;
       border: 1px solid var(--border);
@@ -76,13 +172,11 @@
       font-size: 0.875rem;
       margin-bottom: 0.5rem;
     }
-
     .form-select:focus {
       border-color: var(--accent);
       box-shadow: none;
       outline: 1px solid var(--accent);
     }
-
     .result-line {
       font-weight: 700;
       font-size: 0.9rem;
@@ -93,7 +187,6 @@
       border-left: 2px solid var(--accent);
       border-radius: 0 6px 6px 0;
     }
-
     .radar-wrap {
       max-width: 100%;
       margin: 1.5rem auto 1.8rem;
@@ -104,7 +197,6 @@
       border-radius: var(--border-radius);
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-
     .radar-footer {
       font-size: 0.875rem;
       color: var(--text-secondary);
@@ -116,18 +208,15 @@
       gap: 1rem;
       flex-wrap: wrap;
     }
-
     .lf-tag, .if-tag {
       font-weight: 600;
       color: var(--text-primary);
     }
-
     .radar-footer strong {
       font-weight: 700;
       font-size: 1rem;
       color: var(--text-primary);
     }
-
     .risk-severity {
       font-size: 1rem;
       color: var(--text-secondary);
@@ -137,7 +226,6 @@
       align-items: center;
       gap: 0.5rem;
     }
-
     .risk-severity strong {
       font-weight: 700;
       font-size: 1rem;
@@ -146,13 +234,22 @@
       min-width: 90px;
       text-align: center;
     }
-
     .risk-none { background-color: #d4edda; color: #155724; }
     .risk-low { background-color: #d1e7ff; color: #084298; }
     .risk-medium { background-color: #fff3cd; color: #856404; }
     .risk-high { background-color: #f8d7da; color: #721c24; }
     .risk-critical { background-color: #7f1d1d; color: #ffffff; }
-
+    .risk-none,
+    .risk-low,
+    .risk-medium,
+    .risk-high,
+    .risk-critical {
+      padding: 4px 5px;
+      border-radius: 6px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-block;
+    }
     .owasp-risk-rating {
       text-align: center;
       margin-top: 0.8rem;
@@ -161,7 +258,6 @@
       line-height: 1.6;
       padding: 0.5rem 0;
     }
-
     .vector-label {
       font-weight: 600;
       margin-bottom: 0.3rem;
@@ -169,7 +265,6 @@
       display: block;
       letter-spacing: -0.01px;
     }
-
     .vector-link {
       display: inline-block;
       font-family: 'Courier New', Courier, monospace;
@@ -188,13 +283,11 @@
       cursor: pointer;
       user-select: all;
     }
-
     .vector-link:hover {
       background: #e9ecef;
       color: #000000;
       text-decoration: underline;
     }
-
     .vector-tooltip {
       font-size: 0.7rem;
       color: #888;
@@ -211,11 +304,10 @@
       text-align: center;
       cursor: help;
     }
-
     @media (max-width: 768px) {
       body {
         padding: 1rem 0.6rem 1.8rem;
-        font-size: 16px; /* Tetap 16px, jangan turun */
+        font-size: 16px;
       }
       h1 { font-size: 2rem; padding-bottom: 0.2rem; }
       .card { padding: 0.7rem; }
@@ -249,7 +341,6 @@
         font-size: 1.8rem !important;
       }
     }
-
     .group-header {
       margin: 1.8rem 0 1rem 0;
       font-weight: 700;
@@ -261,7 +352,6 @@
       border-bottom: 1px solid var(--border);
       margin-bottom: 0.8rem;
     }
-
     .group-title {
       font-weight: 700;
       font-size: 1.6rem;
@@ -271,15 +361,12 @@
       margin-bottom: 0.6rem;
       text-align: center;
     }
-
     .row-section {
       margin-bottom: 1.2rem;
     }
-
     .row-section:last-child {
       margin-bottom: 1rem;
     }
-
     .example-note {
       font-size: 1rem;
       color: var(--text-secondary);
@@ -294,7 +381,6 @@
       word-wrap: break-word;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-
     .footer-note {
       font-size: 0.8rem;
       color: #999;
@@ -302,7 +388,6 @@
       margin-top: 0.5rem;
       margin-bottom: 1rem;
     }
-
     #resetBtn {
       font-weight: 600;
       border: 1px solid var(--border);
@@ -314,16 +399,34 @@
       letter-spacing: -0.02px;
       transition: background 0.2s;
     }
-
     #resetBtn:hover {
       background: #f8f9fa;
       color: var(--text-primary);
     }
+    .footer-note {
+      font-size: 0.8rem;
+      color: #999;
+      text-align: center;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* —— Warna Opsi Dropdown Berdasarkan Nilai Angka 0–9 —— */
+    .opt-green { color: #4bd64b; }      /* 0, 1 */
+    .opt-blue { color: #60a5fa; }       /* 2, 3 */
+    .opt-yellow { color: #fbbf24; }     /* 4, 5 */
+    .opt-orange { color: #f87171; }     /* 6, 7 */
+    .opt-red { color: #dc2626; }        /* 8, 9 */
   </style>
 </head>
 <body>
   <div class="container">
     <h1>OWASP Risk Rating Calculator</h1>
+    <button class="dark-mode-toggle" aria-label="Toggle dark mode">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
     <div class="radar-wrap">
       <div class="radar-footer">
         <span class="lf-tag">Likelihood Factor:</span>
@@ -336,21 +439,19 @@
         Overall Risk Severity:
         <strong id="riskSeverityLabel" class="risk-none">None</strong>
       </div>
-
       <div class="owasp-risk-rating">
         <div class="vector-label"></div>
-        <a href="#" id="scoreVectorLink" target="_blank" class="vector-link">
+        <a href="#" id="scoreVectorLink" class="vector-link">
           SL:0/M:0/O:0/S:0/ED:0/EE:0/A:0/ID:0/LC:0/LI:0/LAV:0/LAC:0/FD:0/RD:0/NC:0/PV:0
         </a>
       </div>
       <div class="owasp-risk-rating">
         <div class="vector-label"></div>
-        <a href="#" class="vector-link short-vector-link" id="shortVectorLink" target="_blank">
+        <a href="#" class="vector-link short-vector-link" id="shortVectorLink">
           0000000000000000
         </a>
       </div>
     </div>
-
     <div class="group-header">Likelihood Factors</div>
     <div class="row row-section g-2">
       <div class="col-12 col-md-6">
@@ -364,11 +465,11 @@
             <select id="motive" class="form-select"></select>
             <label>Opportunity</label>
             <select id="opportunity" class="form-select"></select>
-            <label>Size (Population)</label>
+            <label>Size</label>
             <select id="size" class="form-select"></select>
           </div>
           <div class="mt-1">
-            Threat Agent Factor: <span id="tafLabel" class="result-line risk-none">None (TAF: 0)</span>
+            <span id="tafLabel" class="result-line risk-none">None (TAF: 0)</span>
           </div>
         </div>
       </div>
@@ -387,13 +488,11 @@
             <select id="detection" class="form-select"></select>
           </div>
           <div class="mt-1">
-            Vulnerability Factor: <span id="vfLabel" class="result-line risk-none">None (VF: 0)</span>
+            <span id="vfLabel" class="result-line risk-none">None (VF: 0)</span>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- === Group Header Impact Factors === -->
     <div class="group-header">Impact Factors</div>
     <div class="row row-section g-2">
       <div class="col-12 col-md-6">
@@ -411,7 +510,7 @@
             <select id="accountability" class="form-select"></select>
           </div>
           <div class="mt-1">
-            Technical Impact Factor: <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
+            <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
           </div>
         </div>
       </div>
@@ -430,33 +529,27 @@
             <select id="privacy" class="form-select"></select>
           </div>
           <div class="mt-1">
-            Business Impact Factor: <span id="bifLabel" class="result-line risk-none">None (BIF: 0)</span>
+            <span id="bifLabel" class="result-line risk-none">None (BIF: 0)</span>
           </div>
         </div>
       </div>
     </div>
-
     <div class="text-center mt-3">
       <button id="resetBtn" class="btn">Reset</button>
     </div>
-
     <div class="text-center mt-5">
       <select id="explainer" class="form-select" style="font-size: .9rem; max-width: 180px; margin: 0 auto;">
         <option value="">Search</option>
       </select>
     </div>
-
     <div class="example-note">
       List penjelasan :
     </div>
-
     <div class="footer-note">
       Powered by OWASP Risk Rating Methodology | PiwPawPaw
     </div>
   </div>
-
   <script>
-    // ... [SEMUA JAVASCRIPT TETAP SAMA, TIDAK DIUBAH] ...
     let isInitialLoad = true;
     function encodeQuerySafe(str) {
       return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
@@ -563,26 +656,15 @@
       const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
       return fields.map(field => document.getElementById(field)?.value || 0).join('');
     }
-    function buildShortHash() {
-      const shortVector = buildShortVector();
-      return `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
-    }
     function updateUrlWithScoreVector() {
       const fullVector = buildScoreVector();
       const encodedFull = encodeQuerySafe(fullVector);
-      const shortVector = buildShortVector();
-      const encodedShort = encodeQuerySafe(shortVector);
       window.location.replace(window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`);
-      const newShortHash = `#owasp-risk-rating-short=${encodedShort}`;
-      if (window.location.hash !== newShortHash) {
-        window.history.replaceState(null, null, newShortHash);
-      }
     }
     function updateShortVectorLink() {
       const shortVector = buildShortVector();
       const link = document.getElementById('shortVectorLink');
       link.textContent = shortVector;
-      link.href = `#owasp-risk-rating-short=${encodeQuerySafe(shortVector)}`;
     }
     function populate(id, arr){
       const sel=document.getElementById(id);
@@ -596,122 +678,139 @@
       }
     }
     const skillOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Security penetration skills','opt-blue'],
-      [3,'Network and programming skill','opt-green'],
-      [5,'advanced computer user','opt-orange'],
-      [6,'some technical skill','opt-red'],
-      [9,'no technical skills','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Security penetration skills', 'opt-green'],
+      [3, 'Network and programming skill', 'opt-blue'],
+      [5, 'advanced computer user', 'opt-yellow'],
+      [6, 'some technical skill', 'opt-orange'],
+      [9, 'no technical skills', 'opt-red']
     ];
+
     const motiveOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'low or no reward','opt-blue'],
-      [4,'Possible reward','opt-orange'],
-      [9,'High reward','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'low or no reward', 'opt-green'],
+      [4, 'Possible reward', 'opt-yellow'],
+      [9, 'High reward', 'opt-red']
     ];
+
     const opportunityOpts = [
-      [0,'Full access or expensive resources required','opt-blue'],
-      [4,'special access or resources required','opt-orange'],
-      [7,'some access or resources required','opt-red'],
-      [9,'no access or resources required','opt-darkred']
+      [0, 'Full access or expensive resources required', 'opt-green'],
+      [4, 'special access or resources required', 'opt-yellow'],
+      [7, 'some access or resources required', 'opt-orange'],
+      [9, 'no access or resources required', 'opt-red']
     ];
+
     const sizeOpts = [
-      [0,'N/A','opt-blue'],
-      [2,'Developer or system administrators','opt-green'],
-      [4,'Intranet users','opt-orange'],
-      [5,'Partners','opt-orange'],
-      [6,'Authenticated users','opt-red'],
-      [9,'Anonymous Internet users','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [2, 'Developer or system administrators', 'opt-blue'],
+      [4, 'Intranet users', 'opt-yellow'],
+      [5, 'Partners', 'opt-yellow'],
+      [6, 'Authenticated users', 'opt-orange'],
+      [9, 'Anonymous Internet users', 'opt-red']
     ];
+
     const discoveryOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Practically impossible','opt-blue'],
-      [3,'Difficult','opt-green'],
-      [7,'Easy','opt-orange'],
-      [9,'Automated tools available','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Practically impossible', 'opt-green'],
+      [3, 'Difficult', 'opt-blue'],
+      [7, 'Easy', 'opt-orange'],
+      [9, 'Automated tools available', 'opt-red']
     ];
+
     const exploitOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Theoretical','opt-blue'],
-      [3,'Difficult','opt-green'],
-      [5,'Easy','opt-orange'],
-      [9,'Automated tools available','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Theoretical', 'opt-green'],
+      [3, 'Difficult', 'opt-blue'],
+      [5, 'Easy', 'opt-yellow'],
+      [9, 'Automated tools available', 'opt-red']
     ];
+
     const awarenessOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Unknown','opt-blue'],
-      [4,'Hidden','opt-orange'],
-      [6,'Obvious','opt-red'],
-      [9,'Public knowledge','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Unknown', 'opt-green'],
+      [4, 'Hidden', 'opt-yellow'],
+      [6, 'Obvious', 'opt-orange'],
+      [9, 'Public knowledge', 'opt-red']
     ];
+
     const detectionOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Active detection in application','opt-blue'],
-      [3,'Logged and reviewed','opt-green'],
-      [8,'Logged without review','opt-darkred'],
-      [9,'Not logged','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Active detection in application', 'opt-green'],
+      [3, 'Logged and reviewed', 'opt-blue'],
+      [8, 'Logged without review', 'opt-red'],
+      [9, 'Not logged', 'opt-red']
     ];
+
     const confidentialityOpts = [
-      [0,'N/A','opt-blue'],
-      [2,'Minimal non-sensitive data disclosed','opt-green'],
-      [6,'Minimal critical data or extensive non-sensitive data disclosed','opt-orange'],
-      [7,'Extensive critical data disclosed','opt-red'],
-      [9,'All data disclosed','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [2, 'Minimal non-sensitive data disclosed', 'opt-blue'],
+      [6, 'Minimal critical data or extensive non-sensitive data disclosed', 'opt-orange'],
+      [7, 'Extensive critical data disclosed', 'opt-orange'],
+      [9, 'All data disclosed', 'opt-red']
     ];
+
     const integrityOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Minimal slightly corrupt data','opt-blue'],
-      [3,'Minimal seriously corrupt data','opt-green'],
-      [5,'Extensive slightly corrupt data','opt-orange'],
-      [7,'Extensive seriously corrupt data','opt-red'],
-      [9,'All data totally corrupt','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Minimal slightly corrupt data', 'opt-green'],
+      [3, 'Minimal seriously corrupt data', 'opt-blue'],
+      [5, 'Extensive slightly corrupt data', 'opt-yellow'],
+      [7, 'Extensive seriously corrupt data', 'opt-orange'],
+      [9, 'All data totally corrupt', 'opt-red']
     ];
+
     const availabilityOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Minimal secondary services interrupted','opt-blue'],
-      [5,'Minimal primary or extensive secondary services interrupted','opt-orange'],
-      [7,'Extensive primary services interrupted','opt-red'],
-      [9,'All services completely lost','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Minimal secondary services interrupted', 'opt-green'],
+      [5, 'Minimal primary or extensive secondary services interrupted', 'opt-yellow'],
+      [7, 'Extensive primary services interrupted', 'opt-orange'],
+      [9, 'All services completely lost', 'opt-red']
     ];
+
     const accountabilityOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Fully traceable','opt-blue'],
-      [7,'Possibly traceable','opt-red'],
-      [9,'Completely anonymous','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Fully traceable', 'opt-green'],
+      [7, 'Possibly traceable', 'opt-orange'],
+      [9, 'Completely anonymous', 'opt-red']
     ];
+
     const financialOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Less than the cost to fix the vulnerability','opt-blue'],
-      [3,'Minor effect on annual profit','opt-green'],
-      [7,'Significant effect on annual profit','opt-red'],
-      [9,'Bankruptcy','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Less than the cost to fix the vulnerability', 'opt-green'],
+      [3, 'Minor effect on annual profit', 'opt-blue'],
+      [7, 'Significant effect on annual profit', 'opt-orange'],
+      [9, 'Bankruptcy', 'opt-red']
     ];
+
     const reputationOpts = [
-      [0,'N/A','opt-blue'],
-      [1,'Minimal damage','opt-blue'],
-      [4,'Loss of major accounts','opt-orange'],
-      [5,'Loss of goodwill','opt-red'],
-      [9,'Brand damage','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [1, 'Minimal damage', 'opt-green'],
+      [4, 'Loss of major accounts', 'opt-yellow'],
+      [5, 'Loss of goodwill', 'opt-yellow'],
+      [9, 'Brand damage', 'opt-red']
     ];
+
     const noncomplianceOpts = [
-      [0,'N/A','opt-blue'],
-      [2,'Minor violation','opt-green'],
-      [5,'Clear violation','opt-orange'],
-      [7,'High profile violation','opt-red']
+      [0, 'N/A', 'opt-green'],
+      [2, 'Minor violation', 'opt-blue'],
+      [5, 'Clear violation', 'opt-yellow'],
+      [7, 'High profile violation', 'opt-orange']
     ];
+
     const privacyOpts = [
-      [0,'N/A','opt-blue'],
-      [3,'One individual','opt-green'],
-      [5,'Hundreds of people','opt-orange'],
-      [7,'Thousands of people','opt-red'],
-      [9,'Millions of people','opt-darkred']
+      [0, 'N/A', 'opt-green'],
+      [3, 'One individual', 'opt-blue'],
+      [5, 'Hundreds of people', 'opt-yellow'],
+      [7, 'Thousands of people', 'opt-orange'],
+      [9, 'Millions of people', 'opt-red']
     ];
-    const allOpts={
-      skill:skillOpts,motive:motiveOpts,opportunity:opportunityOpts,size:sizeOpts,
-      discovery:discoveryOpts,exploit:exploitOpts,awareness:awarenessOpts,detection:detectionOpts,
-      confidentiality:confidentialityOpts,integrity:integrityOpts,availability:availabilityOpts,accountability:accountabilityOpts,
-      financial:financialOpts,reputation:reputationOpts,noncompliance:noncomplianceOpts,privacy:privacyOpts
+
+    const allOpts = {
+      skill: skillOpts, motive: motiveOpts, opportunity: opportunityOpts, size: sizeOpts,
+      discovery: discoveryOpts, exploit: exploitOpts, awareness: awarenessOpts, detection: detectionOpts,
+      confidentiality: confidentialityOpts, integrity: integrityOpts, availability: availabilityOpts, accountability: accountabilityOpts,
+      financial: financialOpts, reputation: reputationOpts, noncompliance: noncomplianceOpts, privacy: privacyOpts
     };
+
     const explanations = {
       motive: {
         1: "Ancaman berasal dari individu tanpa insentif finansial atau motivasi teknis yang jelas seperti anak remaja yang mencoba eksploitasi karena rasa penasaran atau “hacking for fun”. Risiko rendah karena tidak terorganisir dan tidak berkelanjutan.",
@@ -807,14 +906,17 @@
         3: "Data satu individu terbocor seperti nama dan email. Risiko rendah, tapi bisa menjadi pelanggaran privasi jika tidak dilaporkan.",
         5: "Ratusan orang terdampak seperti data karyawan atau pelanggan kecil. Bisa memicu laporan ke otoritas privasi dan tuntutan hukum.",
         7: "Ribuan orang terdampak seperti data pelanggan layanan online. Ini memicu investigasi regulator dan kehilangan kepercayaan publik.",
-        9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skandal besar, dengan konsekuensi hukum, politik, dan sosial."
+        9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skala besar, dengan konsekuensi hukum, politik, dan sosial."
       }
     };
-    for(const id in allOpts) populate(id,allOpts[id]);
-    const threatIds=['skill','motive','opportunity','size'];
-    const vulnIds=['discovery','exploit','awareness','detection'];
-    const techIds=['confidentiality','integrity','availability','accountability'];
-    const bizIds=['financial','reputation','noncompliance','privacy'];
+
+    for(const id in allOpts) populate(id, allOpts[id]);
+
+    const threatIds = ['skill','motive','opportunity','size'];
+    const vulnIds = ['discovery','exploit','awareness','detection'];
+    const techIds = ['confidentiality','integrity','availability','accountability'];
+    const bizIds = ['financial','reputation','noncompliance','privacy'];
+
     const fieldToCode = {
       skill: 'SL',
       motive: 'M',
@@ -833,10 +935,12 @@
       noncompliance: 'NC',
       privacy: 'PV'
     };
+
     const codeToField = {};
     for (const [field, code] of Object.entries(fieldToCode)) {
       codeToField[code] = field;
     }
+
     function calculate(){
       const tafSum = sumWeight(threatIds);
       const vfSum = sumWeight(vulnIds);
@@ -844,6 +948,7 @@
       const tifSum = sumWeight(techIds);
       const bifSum = sumWeight(bizIds);
       const ifVal = bifSum;
+
       const tafLabel = document.getElementById('tafLabel');
       const vfLabel = document.getElementById('vfLabel');
       const tifLabel = document.getElementById('tifLabel');
@@ -851,6 +956,7 @@
       const lfLabelCenter = document.getElementById('lfLabelCenter');
       const ifLabelCenter = document.getElementById('ifLabelCenter');
       const riskSeverityLabel = document.getElementById('riskSeverityLabel');
+
       const tafLevel = scoreLabelSum(tafSum);
       const vfLevel = scoreLabelSum(vfSum);
       const tifLevel = scoreLabelSum(tifSum);
@@ -858,6 +964,7 @@
       const lfLevel = scoreLabelSum(lf);
       const ifLevel = scoreLabelSum(ifVal);
       const overallRisk = calculateOverallRisk(lf, ifVal);
+
       tafLabel.textContent = `${tafLevel} (TAF: ${formatNum(tafSum)})`;
       vfLabel.textContent = `${vfLevel} (VF: ${formatNum(vfSum)})`;
       tifLabel.textContent = `${tifLevel} (TIF: ${formatNum(tifSum)})`;
@@ -865,6 +972,7 @@
       lfLabelCenter.textContent = `${lfLevel} (LF: ${formatNum(lf)})`;
       ifLabelCenter.textContent = `${ifLevel} (IF: ${formatNum(ifVal)})`;
       riskSeverityLabel.textContent = overallRisk;
+
       tafLabel.className = 'result-line risk-' + tafLevel.toLowerCase().replace(' ', '-');
       vfLabel.className = 'result-line risk-' + vfLevel.toLowerCase().replace(' ', '-');
       tifLabel.className = 'result-line risk-' + tifLevel.toLowerCase().replace(' ', '-');
@@ -872,12 +980,14 @@
       lfLabelCenter.className = 'risk-' + lfLevel.toLowerCase().replace(' ', '-');
       ifLabelCenter.className = 'risk-' + ifLevel.toLowerCase().replace(' ', '-');
       riskSeverityLabel.className = 'risk-' + overallRisk.toLowerCase().replace(' ', '-');
+
       const scoreVector = buildScoreVector();
       const link = document.getElementById('scoreVectorLink');
       link.textContent = scoreVector;
       link.href = `#owasp-risk-rating=${encodeQuerySafe(scoreVector)}`;
       updateShortVectorLink();
     }
+
     function populateExplainer() {
       const explainer = document.getElementById('explainer');
       explainer.innerHTML = '<option value="">Search</option>';
@@ -885,7 +995,7 @@
         skill: 'Skill level',
         motive: 'Motive',
         opportunity: 'Opportunity',
-        size: 'Size (Population)',
+        size: 'Size',
         discovery: 'Ease of discovery',
         exploit: 'Ease of exploit',
         awareness: 'Awareness',
@@ -906,6 +1016,7 @@
         explainer.appendChild(opt);
       }
     }
+
     function updateExampleNoteFromExplainer() {
       const explainer = document.getElementById('explainer');
       const exampleNote = document.querySelector('.example-note');
@@ -940,7 +1051,7 @@
       }
       const explainerMap = explanations[selected] || {};
       let lines = [`${selected === 'noncompliance' ? 'Non-compliance' : selected === 'privacy' ? 'Privacy Violation' :
-        selected === 'skill' ? 'Skill level' : selected === 'size' ? 'Size (Population)' :
+        selected === 'skill' ? 'Skill level' : selected === 'size' ? 'Size' :
         selected === 'financial' ? 'Financial Damage' : selected === 'reputation' ? 'Reputation Damage' :
         selected === 'confidentiality' ? 'Loss of Confidentiality' : selected === 'integrity' ? 'Loss of Integrity' :
         selected === 'availability' ? 'Loss of Availability' : selected === 'accountability' ? 'Loss of Accountability' :
@@ -955,9 +1066,11 @@
       }
       exampleNote.textContent = lines.join('\n');
     }
+
     document.getElementById('explainer').addEventListener('change', updateExampleNoteFromExplainer);
     populateExplainer();
     updateExampleNoteFromExplainer();
+
     [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener('change', () => {
@@ -967,6 +1080,7 @@
         }
       });
     });
+
     document.getElementById('resetBtn').addEventListener('click', () => {
       [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => document.getElementById(id).value = 0);
       calculate();
@@ -974,17 +1088,147 @@
         updateUrlWithScoreVector();
       }
     });
+
     if (window.location.search) {
       window.location.replace(window.location.origin + window.location.pathname);
     }
+
     document.addEventListener('DOMContentLoaded', () => {
       parseScoreVectorFromUrl();
       parseShortHashFromUrl();
       isInitialLoad = false;
     });
+
     window.addEventListener('hashchange', () => {
       parseScoreVectorFromUrl();
       parseShortHashFromUrl();
+    });
+
+    // === DARK MODE TOGGLE ===
+    function initDarkMode() {
+      const toggleBtn = document.querySelector('.dark-mode-toggle');
+      const html = document.documentElement;
+      const savedMode = localStorage.getItem('owasp-risk-mode');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedMode === 'dark' || (!savedMode && prefersDark)) {
+        html.setAttribute('data-mode', 'dark');
+        toggleBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        `;
+      }
+      toggleBtn.addEventListener('click', () => {
+        const currentMode = html.getAttribute('data-mode');
+        const newMode = currentMode === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-mode', newMode);
+        localStorage.setItem('owasp-risk-mode', newMode);
+        if (newMode === 'dark') {
+          toggleBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          `;
+        } else {
+          toggleBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          `;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initDarkMode();
+    });
+
+    function copyFullUrl(element) {
+      const fullVector = buildScoreVector();
+      const encodedFull = encodeQuerySafe(fullVector);
+      const fullUrl = window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`;
+      if (!navigator.clipboard) {
+        const textarea = document.createElement('textarea');
+        textarea.value = fullUrl;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      } else {
+        navigator.clipboard.writeText(fullUrl).catch(err => {
+          console.error('Failed to copy full URL: ', err);
+        });
+      }
+      const originalText = element.textContent;
+      element.textContent = 'Copied!';
+      element.style.color = '#10b981';
+      element.style.fontWeight = '600';
+      element.style.transition = 'all 0.2s ease';
+      setTimeout(() => {
+        element.textContent = originalText;
+        element.style.color = '';
+        element.style.fontWeight = '';
+      }, 1500);
+    }
+
+    function copyShortUrl(element) {
+      const shortVector = buildShortVector();
+      const encodedShort = encodeQuerySafe(shortVector);
+      const shortUrl = window.location.origin + window.location.pathname + `#owasp-risk-rating-short=${encodedShort}`;
+      if (!navigator.clipboard) {
+        const textarea = document.createElement('textarea');
+        textarea.value = shortUrl;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      } else {
+        navigator.clipboard.writeText(shortUrl).catch(err => {
+          console.error('Failed to copy short URL: ', err);
+        });
+      }
+      const originalText = element.textContent;
+      element.textContent = 'Copied!';
+      element.style.color = '#10b981';
+      element.style.fontWeight = '600';
+      element.style.transition = 'all 0.2s ease';
+      setTimeout(() => {
+        element.textContent = originalText;
+        element.style.color = '';
+        element.style.fontWeight = '';
+      }, 1500);
+    }
+
+    function updateShortVectorLink() {
+      const shortVector = buildShortVector();
+      const link = document.getElementById('shortVectorLink');
+      link.textContent = shortVector;
+    }
+
+    document.getElementById('scoreVectorLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      copyFullUrl(this);
+    });
+
+    document.getElementById('shortVectorLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      copyShortUrl(this);
     });
   </script>
 </body>
