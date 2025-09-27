@@ -17,7 +17,7 @@
       --text-secondary: #4a4a4a;
       --accent: #000000;
       --border: #d1d1d1;
-      --bg: #ffffff;
+      --bg: #f3f3f3;
       --card-bg: #ffffff;
       --border-radius: 8px;
       --base-font-size: 16px;
@@ -67,11 +67,11 @@
       color: #ffffff;
       text-decoration: underline;
     }
-    [data-mode="dark"] .risk-none { background-color: #2a2a2a; color: #b0b0b0; }
-    [data-mode="dark"] .risk-low { background-color: #1a2a4a; color: #60a5fa; }
-    [data-mode="dark"] .risk-medium { background-color: #4a3a1a; color: #fbbf24; }
-    [data-mode="dark"] .risk-high { background-color: #4a1a1a; color: #f87171; }
-    [data-mode="dark"] .risk-critical { background-color: #7f1d1d; color: #ffffff; }
+    [data-mode="dark"] .risk-none { background-color: #00ff00; color: #000000; }
+    [data-mode="dark"] .risk-low { background-color: #60a5fa; color: #000000; }
+    [data-mode="dark"] .risk-medium { background-color: #fbbf24; color: #000000; }
+    [data-mode="dark"] .risk-high { background-color: #f87171; color: #000000; }
+    [data-mode="dark"] .risk-critical { background-color: #dc2626; color: #000000; }
     [data-mode="dark"] .group-header {
       border-bottom-color: var(--border);
     }
@@ -93,7 +93,7 @@
     }
     [data-mode="dark"] .vector-tooltip {
       background: #3a3a3a;
-      color: #b0b0b0;
+      color: #b6b6b6;
     }
     .dark-mode-toggle {
       position: absolute;
@@ -234,11 +234,11 @@
       min-width: 90px;
       text-align: center;
     }
-    .risk-none { background-color: #d4edda; color: #155724; }
-    .risk-low { background-color: #d1e7ff; color: #084298; }
-    .risk-medium { background-color: #fff3cd; color: #856404; }
-    .risk-high { background-color: #f8d7da; color: #721c24; }
-    .risk-critical { background-color: #7f1d1d; color: #ffffff; }
+    .risk-none { background-color: #00ff00; color: #000000; }
+    .risk-low { background-color: #60a5fa; color: #000000; }
+    .risk-medium { background-color: #fbbf24; color: #000000; }
+    .risk-high { background-color: #f87171; color: #000000; }
+    .risk-critical { background-color: #dc2626; color: #000000; }
     .risk-none,
     .risk-low,
     .risk-medium,
@@ -410,12 +410,10 @@
       margin-top: 0.5rem;
       margin-bottom: 1rem;
     }
-
-    /* —— Warna Opsi Dropdown Berdasarkan Nilai Angka 0–9 —— */
-    .opt-green { color: #4bd64b; }      /* 0, 1 */
+    .opt-green { color: #00ff00; }      /* 0, 1 */
     .opt-blue { color: #60a5fa; }       /* 2, 3 */
-    .opt-yellow { color: #fbbf24; }     /* 4, 5 */
-    .opt-orange { color: #f87171; }     /* 6, 7 */
+    .opt-yellow { color: #ffca43; }     /* 4, 5 */
+    .opt-orange { color: #ff9100; }     /* 6, 7 */
     .opt-red { color: #dc2626; }        /* 8, 9 */
   </style>
 </head>
@@ -546,7 +544,7 @@
       List penjelasan :
     </div>
     <div class="footer-note">
-      Powered by OWASP Risk Rating Methodology | PiwPawPaw
+      This Risk Rating Calculator is based on <a href="https://owasp.org/www-community/OWASP_Risk_Rating_Methodology">OWASP Risk Rating Methodology</a><br>PiwPawPaw
     </div>
   </div>
   <script>
@@ -598,7 +596,7 @@
       const pairs = vectorStr.split('/');
       let retries = 0;
       const maxRetries = 10;
-      const interval = 100; // ms
+      const interval = 100;
       function trySetValues() {
         let allFound = true;
         for (const pair of pairs) {
@@ -620,7 +618,7 @@
           retries++;
           setTimeout(trySetValues, interval);
         } else {
-          console.warn('Failed to set values from hash after 10 retries. Check DOM.');
+          console.warn('Failed to set values from hash after 10 retries.');
         }
       }
       trySetValues();
@@ -813,100 +811,100 @@
 
     const explanations = {
       motive: {
-        1: "Ancaman berasal dari individu tanpa insentif finansial atau motivasi teknis yang jelas seperti anak remaja yang mencoba eksploitasi karena rasa penasaran atau “hacking for fun”. Risiko rendah karena tidak terorganisir dan tidak berkelanjutan.",
-        4: "Pelaku memiliki potensi keuntungan seperti pencurian data untuk dijual di dark web, atau akses ilegal untuk mendapatkan keuntungan finansial jangka pendek. Motivasi ini lebih serius dan sering terlihat pada serangan terarah (targeted attacks).",
-        9: "Ancaman berasal dari organisasi kriminal, negara, atau kelompok bersenjata yang memiliki sumber daya besar dan tujuan strategis seperti pencurian intelijen, perusakan infrastruktur kritis, atau serangan ransomware berskala besar. Ini adalah ancaman tingkat ekstrem yang memerlukan respons keamanan tinggi."
+        1: "The threat comes from individuals without financial incentives or clear technical motivation, such as teenagers experimenting out of curiosity or 'hacking for fun'. Low risk because it is unorganized and unsustainable.",
+        4: "The attacker has potential gains such as stealing data to sell on the dark web, or gaining illegal access for short-term financial benefits. This motivation is more serious and often seen in targeted attacks.",
+        9: "The threat comes from criminal organizations, nation-states, or armed groups with significant resources and strategic goals such as stealing intelligence, damaging critical infrastructure, or launching large-scale ransomware attacks. This is an extreme threat level that requires strong security response."
       },
       skill: {
-        1: "Pelaku memiliki keterampilan penetration testing profesional mampu mengeksploitasi kerentanan kompleks tanpa bantuan alat otomatis. Biasanya berasal dari kelompok keamanan atau penjahat cyber berpengalaman.",
-        3: "Pelaku memahami jaringan dan pemrograman dasar mampu memanfaatkan kerentanan umum seperti SQLi atau XSS. Umumnya adalah developer atau admin yang beralih ke penyalahgunaan.",
-        5: "Pelaku adalah pengguna komputer biasa yang tahu cara menjalankan alat eksploitasi siap pakai (seperti Metasploit). Tidak memahami kode, tapi bisa mengeksekusi serangan otomatis.",
-        6: "Pelaku memiliki sedikit pengetahuan teknis mungkin hanya tahu cara mengklik link berbahaya atau mengirim email phishing. Sering menjadi bagian dari serangan skala besar (spray-and-pray).",
-        9: "Pelaku sama sekali tidak memiliki keterampilan teknis mungkin hanya membuka email phishing atau memasukkan password lemah. Ancaman ini sangat umum, tapi tidak terarah."
+        1: "The attacker has professional penetration testing skills, capable of exploiting complex vulnerabilities without automated tools. Typically from security teams or experienced cybercriminals.",
+        3: "The attacker understands basic networking and programming, able to exploit common vulnerabilities like SQLi or XSS. Often developers or admins misusing their knowledge.",
+        5: "The attacker is an average computer user who knows how to run ready-made exploit tools (such as Metasploit). They don’t understand code, but can execute automated attacks.",
+        6: "The attacker has minimal technical knowledge, maybe only clicking malicious links or sending phishing emails. Often part of large-scale spray-and-pray attacks.",
+        9: "The attacker has no technical skills at all, maybe just opening phishing emails or using weak passwords. This threat is very common but not targeted."
       },
       opportunity: {
-        0: "Serangan memerlukan akses fisik, jaringan internal, atau sumber daya mahal seperti server lokal atau kredensial admin. Sangat sulit diakses oleh pihak luar.",
-        4: "Pelaku memerlukan akses khusus seperti login sebagai pengguna biasa, atau koneksi ke jaringan tertentu. Masih memerlukan usaha signifikan untuk mencapai target.",
-        7: "Pelaku memerlukan akses dasar seperti koneksi internet publik. Tidak perlu otorisasi khusus. Ini adalah tingkat ancaman yang paling umum di internet.",
-        9: "Tidak ada hambatan akses serangan bisa dilakukan dari mana saja, tanpa autentikasi. Ini adalah kondisi paling berbahaya: sistem terbuka sepenuhnya."
+        0: "The attack requires physical access, internal network, or expensive resources such as local servers or admin credentials. Very difficult for outsiders to reach.",
+        4: "The attacker needs special access such as logging in as a normal user, or connecting to a specific network. Still requires significant effort to reach the target.",
+        7: "The attacker only needs basic access such as public internet connection. No special authorization required. This is the most common threat level on the internet.",
+        9: "No access barriers the attack can be launched from anywhere without authentication. This is the most dangerous condition: the system is fully open."
       },
       size: {
-        2: "Ancaman hanya datang dari kelompok kecil seperti admin sistem atau developer internal. Jumlah pelaku terbatas, dan biasanya terkendali oleh kebijakan organisasi.",
-        4: "Ancaman datang dari pengguna internal seperti karyawan atau staf. Mereka memiliki akses terbatas, tapi jumlahnya cukup besar untuk meningkatkan risiko kebocoran.",
-        5: "Ancaman berasal dari mitra bisnis, vendor, atau pihak eksternal yang memiliki akses terbatas ke sistem. Kontrol akses mungkin lemah, meningkatkan risiko insider threat.",
-        6: "Ancaman datang dari pengguna yang telah diautentikasi seperti pelanggan yang login ke sistem. Jumlahnya besar, dan setiap akun bisa menjadi pintu masuk.",
-        9: "Ancaman datang dari siapa saja di internet tanpa autentikasi. Ini adalah skenario paling berbahaya: sistem terbuka untuk semua, termasuk penyerang global."
+        2: "Threats only come from a small group such as system admins or internal developers. The number of attackers is limited and usually controlled by organizational policy.",
+        4: "Threats come from internal users such as employees or staff. They have limited access, but the number is large enough to increase leakage risk.",
+        5: "Threats come from business partners, vendors, or external parties with limited access to the system. Weak access control increases insider threat risk.",
+        6: "Threats come from authenticated users such as customers logged into the system. The number is large, and each account can be an entry point.",
+        9: "Threats come from anyone on the internet without authentication. This is the most dangerous scenario: the system is open to everyone, including global attackers."
       },
       discovery: {
-        1: "Kerentanan sangat tersembunyi tidak terdeteksi oleh alat otomatis, memerlukan analisis manual mendalam, atau hanya ada di kode yang tidak terdokumentasi. Sangat sulit ditemukan.",
-        3: "Kerentanan memerlukan upaya teknis untuk ditemukan seperti scanning khusus, reverse engineering, atau pengujian manual. Tidak terdeteksi oleh alat standar.",
-        7: "Kerentanan mudah ditemukan dengan alat otomatis (seperti Nikto, Burp Suite, atau OWASP ZAP). Banyak dokumentasi publik tentang cara menemukannya.",
-        9: "Kerentanan sangat terkenal telah diumumkan di CVE, ada exploit publik, dan alat otomatis langsung bisa mendeteksi. Ini adalah kerentanan yang paling berbahaya karena dimanfaatkan massal."
+        1: "The vulnerability is very hidden, undetectable by automated tools, requires deep manual analysis, or exists only in undocumented code. Very difficult to find.",
+        3: "The vulnerability requires technical effort to discover, such as special scanning, reverse engineering, or manual testing. Not detected by standard tools.",
+        7: "The vulnerability is easily found using automated tools (such as Nikto, Burp Suite, or OWASP ZAP). Plenty of public documentation exists on how to find it.",
+        9: "The vulnerability is well-known, published in CVEs, with public exploits available, and automated tools can detect it instantly. This is the most dangerous as it is mass-exploited."
       },
       exploit: {
-        1: "Eksploitasi hanya mungkin secara teoretis tidak ada bukti praktis, dan memerlukan kondisi langka. Tidak ada alat yang tersedia, dan eksploitasi memerlukan keahlian tingkat tinggi.",
-        3: "Eksploitasi sulit memerlukan penyesuaian khusus, waktu lama, atau kombinasi beberapa teknik. Tidak ada exploit publik, dan hanya ahli yang bisa melakukannya.",
-        5: "Eksploitasi mudah ada script publik, tutorial online, dan alat siap pakai. Tidak memerlukan keahlian tinggi, tapi tetap memerlukan sedikit usaha.",
-        9: "Eksploitasi otomatis tersedia sebagai exploit code di GitHub, Metasploit, atau dark web. Siapa pun bisa menjalankannya dalam hitungan detik tanpa pengetahuan teknis."
+        1: "Exploitation is only theoretically possible, no practical evidence, and requires rare conditions. No tools available, and exploitation requires advanced expertise.",
+        3: "Exploitation is difficult, requiring special adjustments, long time, or combining several techniques. No public exploit, only experts can execute.",
+        5: "Exploitation is easy, public scripts, online tutorials, and ready-to-use tools exist. Doesn’t require advanced skills, but still some effort.",
+        9: "Exploitation is fully automated with public exploit code available on GitHub, Metasploit, or the dark web. Anyone can run it within seconds without technical knowledge."
       },
       awareness: {
-        1: "Kerentanan tidak diketahui publik bahkan oleh vendor. Ini adalah zero-day yang sangat berbahaya, karena tidak ada patch atau mitigasi yang tersedia.",
-        4: "Kerentanan diketahui oleh sebagian kecil komunitas mungkin hanya di kalangan peneliti keamanan. Belum ada dokumentasi publik luas.",
-        6: "Kerentanan diketahui oleh banyak pengembang dan admin mungkin ada peringatan internal, tapi belum dipublikasikan. Risiko tinggi karena banyak yang tahu, tapi belum diperbaiki.",
-        9: "Kerentanan sangat terkenal ada artikel, video, dan forum publik membahasnya. Vendor telah merilis patch, tapi banyak sistem belum diperbarui. Ini adalah ancaman paling umum."
+        1: "The vulnerability is unknown to the public, even to the vendor. This is a very dangerous zero-day because no patch or mitigation is available.",
+        4: "The vulnerability is known only to a small part of the security community, such as researchers. Not widely documented publicly.",
+        6: "The vulnerability is known by many developers and admins, warnings may exist internally but not published. High risk because many know, but not yet fixed.",
+        9: "The vulnerability is very famous, with articles, videos, and public forums discussing it. The vendor has released a patch, but many systems remain unpatched. This is the most common threat."
       },
       detection: {
-        1: "Sistem memiliki deteksi aktif seperti WAF, IDS, atau SIEM yang langsung memblokir dan mengirim notifikasi. Serangan akan langsung terdeteksi dan dihentikan.",
-        3: "Aktivitas dicatat dan ditinjau secara berkala seperti log audit yang diperiksa harian. Serangan bisa terdeteksi, tapi tidak secara real-time.",
-        8: "Aktivitas dicatat, tapi tidak ditinjau log hanya disimpan, tanpa analisis. Serangan bisa terjadi tanpa diketahui selama berbulan-bulan.",
-        9: "Tidak ada logging sama sekali tidak ada jejak aktivitas. Serangan bisa terjadi tanpa jejak, dan tidak akan pernah diketahui kecuali kerusakan terlihat."
+        1: "The system has active detection such as WAF, IDS, or SIEM that blocks and alerts immediately. Attacks are detected and stopped right away.",
+        3: "Activities are logged and periodically reviewed, such as daily audit log checks. Attacks can be detected, but not in real-time.",
+        8: "Activities are logged but never reviewed. Logs are just stored without analysis. Attacks may go unnoticed for months.",
+        9: "No logging at all, no trace of activity. Attacks can happen without evidence and will only be noticed when damage becomes visible."
       },
       confidentiality: {
-        2: "Hanya data non-sensitif yang terbocor seperti nama pengguna atau ID yang tidak terkait identitas. Tidak ada risiko hukum atau reputasi.",
-        6: "Data sensitif terbocor seperti email, nomor telepon, atau riwayat aktivitas. Bisa digunakan untuk phishing atau social engineering. Berisiko pelanggaran GDPR/privasi.",
-        7: "Data kritis terbocor seperti password hash, token akses, atau dokumen internal. Ini bisa menjadi pintu masuk ke sistem lain atau bahan untuk serangan lanjutan.",
-        9: "Semua data terbocor termasuk database pelanggan, dokumen rahasia, dan informasi keuangan. Ini adalah kebocoran terburuk yang bisa terjadi."
+        2: "Only non-sensitive data leaks, such as usernames or IDs not linked to identity. No legal or reputational risk.",
+        6: "Sensitive data leaks, such as emails, phone numbers, or activity history. Could be used for phishing or social engineering. Risk of GDPR/privacy violations.",
+        7: "Critical data leaks, such as password hashes, access tokens, or internal documents. Can be used as entry points for other systems or further attacks.",
+        9: "All data leaks, including customer databases, confidential documents, and financial information. This is the worst-case data breach."
       },
       integrity: {
-        1: "Data mengalami perubahan kecil seperti typo di halaman web. Tidak memengaruhi fungsionalitas atau kepercayaan pengguna.",
-        3: "Beberapa data kritis rusak seperti saldo akun salah atau konfigurasi sistem berubah. Bisa menyebabkan gangguan operasional kecil.",
-        5: "Banyak data rusak seperti riwayat transaksi atau log sistem yang dimodifikasi. Ini bisa menyebabkan ketidakpercayaan pengguna dan biaya pemulihan tinggi.",
-        7: "Data kritis rusak secara luas seperti database pelanggan, konfigurasi firewall, atau sistem autentikasi. Ini bisa menyebabkan kegagalan sistem besar.",
-        9: "Semua data rusak total tidak ada cara untuk memulihkan keadaan semula tanpa backup. Ini adalah serangan seperti ransomware atau wiping."
+        1: "Data undergoes minor changes, such as typos on a webpage. Doesn’t affect functionality or user trust.",
+        3: "Some critical data is corrupted, such as incorrect account balances or altered system configs. Causes small operational issues.",
+        5: "A large amount of data is corrupted, such as modified transaction history or system logs. Causes user distrust and high recovery costs.",
+        7: "Critical data is widely corrupted, such as customer databases, firewall configs, or authentication systems. Causes major system failures.",
+        9: "All data is totally corrupted, no way to restore without backups. This is like ransomware or data wiping attacks."
       },
       availability: {
-        1: "Layanan sekunder terganggu seperti fitur non-inti (chatbot, notifikasi). Tidak memengaruhi operasi utama.",
-        5: "Layanan utama terganggu sementara seperti website down selama beberapa jam. Memengaruhi produktivitas dan pendapatan, tapi bisa pulih cepat.",
-        7: "Layanan utama terganggu lama seperti sistem pembayaran atau login down selama berhari-hari. Menyebabkan kerugian finansial besar dan kehilangan pelanggan.",
-        9: "Semua layanan hilang total server dimatikan, data dihapus, sistem tidak bisa diakses. Ini adalah serangan seperti DDoS massal atau ransomware tanpa kunci."
+        1: "Secondary services are disrupted, such as non-core features (chatbot, notifications). Doesn’t affect main operations.",
+        5: "Main services temporarily disrupted, such as website down for a few hours. Affects productivity and revenue, but quick recovery is possible.",
+        7: "Main services disrupted for a long time, such as payment systems or login down for days. Causes major financial losses and customer churn.",
+        9: "All services completely lost, servers shut down, data deleted, systems inaccessible. This is like massive DDoS or ransomware without keys."
       },
       accountability: {
-        1: "Semua akses dilacak log lengkap, audit trail tersedia, dan aktivitas bisa dikaitkan ke individu. Tidak ada anonimitas.",
-        7: "Beberapa akses bisa dilacak tapi ada celah dalam log. Mungkin hanya IP yang tercatat, bukan pengguna. Sulit menentukan siapa pelaku sebenarnya.",
-        9: "Tidak ada jejak semua aktivitas dilakukan secara anonim, atau sistem tidak mencatat sama sekali. Ini memungkinkan serangan tanpa konsekuensi."
+        1: "All access is tracked, full audit trail available, and activity can be linked to individuals. No anonymity.",
+        7: "Some access is trackable but logs have gaps. For example, only IPs logged, not users. Difficult to determine actual attacker.",
+        9: "No trace at all, all activity is anonymous, or the system doesn’t log anything. Attacks can happen without consequences."
       },
       financial: {
-        1: "Biaya perbaikan lebih besar daripada kerugian seperti mengganti password atau memperbaiki halaman web. Tidak berdampak finansial signifikan.",
-        3: "Kerugian kecil seperti biaya tambahan untuk audit atau pemberitahuan pelanggan. Tidak memengaruhi profit tahunan.",
-        7: "Kerugian besar seperti denda regulasi, biaya pemulihan, atau kehilangan pendapatan selama downtime. Bisa memengaruhi laba bersih secara signifikan.",
-        9: "Kerugian mengancam kelangsungan hidup seperti kebangkrutan, tuntutan hukum massal, atau kehilangan lisensi bisnis. Ini adalah risiko yang tidak bisa ditoleransi."
+        1: "Repair cost is greater than the loss, such as resetting passwords or fixing a webpage. No significant financial impact.",
+        3: "Small losses such as additional audit costs or customer notification. Doesn’t affect annual profit.",
+        7: "Major losses such as regulatory fines, recovery costs, or lost revenue during downtime. Can significantly affect net income.",
+        9: "Losses threaten business survival, such as bankruptcy, mass lawsuits, or loss of business license. This is an intolerable risk."
       },
       reputation: {
-        1: "Dampak minimal seperti satu keluhan pelanggan. Tidak ada publikasi media atau kehilangan kepercayaan.",
-        4: "Kehilangan pelanggan utama seperti klien besar yang membatalkan kontrak. Mempengaruhi pendapatan jangka panjang.",
-        5: "Kehilangan kepercayaan publik pelanggan mulai ragu, media membahasnya, dan reputasi brand tercoreng. Sulit dipulihkan tanpa kampanye PR besar.",
-        9: "Kerusakan merek permanen nama perusahaan dikaitkan dengan keamanan buruk. Investor menarik dana, karyawan keluar, dan pasar menghindari produk."
+        1: "Minimal impact, such as a single customer complaint. No media coverage or trust loss.",
+        4: "Loss of major customers, such as large clients canceling contracts. Affects long-term revenue.",
+        5: "Loss of public trust, customers become skeptical, media coverage damages the brand. Hard to recover without large PR campaigns.",
+        9: "Permanent brand damage, the company becomes associated with poor security. Investors withdraw, employees leave, and the market avoids the product."
       },
       noncompliance: {
-        2: "Pelanggaran kecil seperti tidak memenuhi satu poin dalam kebijakan internal. Tidak ada sanksi hukum, hanya peringatan.",
-        5: "Pelanggaran jelas seperti melanggar GDPR, HIPAA, atau PCI-DSS. Bisa mengakibatkan denda dan audit wajib.",
-        7: "Pelanggaran berita utama seperti kebocoran data jutaan pelanggan yang dilaporkan media. Ini menyebabkan investigasi pemerintah dan reputasi hancur."
+        2: "Minor violation such as failing one point in internal policy. No legal sanction, just a warning.",
+        5: "Clear violation such as breaking GDPR, HIPAA, or PCI-DSS. Can lead to fines and mandatory audits.",
+        7: "High-profile violation, such as data breaches of millions reported in media. Triggers government investigation and destroys reputation."
       },
       privacy: {
-        3: "Data satu individu terbocor seperti nama dan email. Risiko rendah, tapi bisa menjadi pelanggaran privasi jika tidak dilaporkan.",
-        5: "Ratusan orang terdampak seperti data karyawan atau pelanggan kecil. Bisa memicu laporan ke otoritas privasi dan tuntutan hukum.",
-        7: "Ribuan orang terdampak seperti data pelanggan layanan online. Ini memicu investigasi regulator dan kehilangan kepercayaan publik.",
-        9: "Jutaan orang terdampak seperti kebocoran database nasional atau layanan publik. Ini adalah skala besar, dengan konsekuensi hukum, politik, dan sosial."
+        3: "Data of a single individual leaked, such as name and email. Low risk, but may still be a privacy breach if unreported.",
+        5: "Hundreds of people affected, such as employee or small customer data. May trigger privacy authority reports and lawsuits.",
+        7: "Thousands of people affected, such as customer data of an online service. Triggers regulator investigations and public trust loss.",
+        9: "Millions of people affected, such as a national database or public service breach. Large-scale consequences: legal, political, and social."
       }
     };
 
@@ -1023,7 +1021,7 @@
       if (!explainer || !exampleNote) return;
       const selected = explainer.value;
       if (!selected) {
-        exampleNote.textContent = '^-^';
+        exampleNote.textContent = 'Hmmmm...I will explain this for u ❣️ ^-^';
         return;
       }
       const fieldMapping = {
@@ -1104,7 +1102,6 @@
       parseShortHashFromUrl();
     });
 
-    // === DARK MODE TOGGLE ===
     function initDarkMode() {
       const toggleBtn = document.querySelector('.dark-mode-toggle');
       const html = document.documentElement;
@@ -1113,7 +1110,7 @@
       if (savedMode === 'dark' || (!savedMode && prefersDark)) {
         html.setAttribute('data-mode', 'dark');
         toggleBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -1133,7 +1130,7 @@
         localStorage.setItem('owasp-risk-mode', newMode);
         if (newMode === 'dark') {
           toggleBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="5"></circle>
               <line x1="12" y1="1" x2="12" y2="3"></line>
               <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -1147,7 +1144,7 @@
           `;
         } else {
           toggleBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           `;
@@ -1177,7 +1174,7 @@
       }
       const originalText = element.textContent;
       element.textContent = 'Copied!';
-      element.style.color = '#10b981';
+      element.style.color = '#00eaff';
       element.style.fontWeight = '600';
       element.style.transition = 'all 0.2s ease';
       setTimeout(() => {
@@ -1205,7 +1202,7 @@
       }
       const originalText = element.textContent;
       element.textContent = 'Copied!';
-      element.style.color = '#10b981';
+      element.style.color = '#00eaff';
       element.style.fontWeight = '600';
       element.style.transition = 'all 0.2s ease';
       setTimeout(() => {
@@ -1214,6 +1211,22 @@
         element.style.fontWeight = '';
       }, 1500);
     }
+    function applySelectColor(select) {
+      const selected = select.options[select.selectedIndex];
+      if (selected.classList.contains('opt-green')) select.style.color = '#00ff00';
+      else if (selected.classList.contains('opt-blue')) select.style.color = '#60a5fa';
+      else if (selected.classList.contains('opt-yellow')) select.style.color = '#ffca43';
+      else if (selected.classList.contains('opt-orange')) select.style.color = '#ff9100';
+      else if (selected.classList.contains('opt-red')) select.style.color = '#dc2626';
+      else select.style.color = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('select.form-select').forEach(sel => {
+        applySelectColor(sel);
+        sel.addEventListener('change', () => applySelectColor(sel));
+      });
+    });
 
     function updateShortVectorLink() {
       const shortVector = buildShortVector();
