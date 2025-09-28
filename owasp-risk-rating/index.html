@@ -3,557 +3,580 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="OWASP Risk Rating Calculator" />
-  <meta name="keywords" content="OWASP Risk Assessment, OWASP Risk Rating Calculator, OWASP Risk Rating Tool" />
+  <meta name="description" content="A modern and interactive OWASP Risk Rating Calculator with a dynamic radar chart." />
+  <meta name="keywords" content="OWASP Risk Assessment, OWASP Risk Rating Calculator, OWASP Risk Rating Tool, Cybersecurity, Risk Analysis" />
   <meta name="robots" content="index, follow" />
   <meta property="og:site_name" content="OWASP Risk Rating Calculator" />
   <meta name="color-scheme" content="light dark">
   <title>OWASP Risk Rating Calculator</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.undefinedapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --text-primary: #1a1a1a;
-      --text-secondary: #4a4a4a;
-      --accent: #000000;
-      --border: #d1d1d1;
-      --bg: #f3f3f3;
-      --card-bg: #ffffff;
-      --border-radius: 8px;
-      --base-font-size: 16px;
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --accent-primary: #0d6efd;
+      --border-color: #dee2e6;
+      --shadow-color: rgba(0, 0, 0, 0.05);
+      --border-radius: 0.5rem;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      
+      --risk-none-bg: #e9ecef; --risk-none-text: #495057;
+      --risk-low-bg: #cfe2ff; --risk-low-text: #0a58ca;
+      --risk-medium-bg: #fff3cd; --risk-medium-text: #856404;
+      --risk-high-bg: #f8d7da; --risk-high-text: #721c24;
+      --risk-critical-bg: #dc3545; --risk-critical-text: #ffffff;
+
+      --opt-green: #198754;
+      --opt-blue: #0d6efd;
+      --opt-yellow: #ffc107;
+      --opt-orange: #fd7e14;
+      --opt-red: #dc3545;
     }
-    :root[data-mode="dark"] {
+
+    :root[data-theme="dark"] {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
       --text-primary: #e0e0e0;
-      --text-secondary: #b0b0b0;
-      --accent: #ffffff;
-      --border: #333333;
-      --bg: #121212;
-      --card-bg: #1e1e1e;
+      --text-secondary: #a0a0a0;
+      --accent-primary: #4dabf7;
+      --border-color: #333333;
+      --shadow-color: rgba(0, 0, 0, 0.2);
+
+      --risk-none-bg: #198754; --risk-none-text: #ffffff;
+      --risk-low-bg: #0a58ca; --risk-low-text: #000000;
+      --risk-medium-bg: #ffc107; --risk-medium-text: #000000;
+      --risk-high-bg: #d77710; --risk-high-text: #000000;
+      --risk-critical-bg: #c93a47; --risk-critical-text: #000000;
+
+      --opt-green: #20c997;
+      --opt-blue: #4dabf7;
+      --opt-yellow: #ffd43b;
+      --opt-orange: #ff922b;
+      --opt-red: #ff6b6b;
     }
-    [data-mode="dark"] body {
-      background-color: var(--bg);
-      color: var(--text-primary);
-    }
-    [data-mode="dark"] .card {
-      border-color: var(--border);
-      background: var(--card-bg);
-    }
-    [data-mode="dark"] .form-select {
-      border-color: var(--border);
-      background-color: #2a2a2a;
-      color: var(--text-primary);
-    }
-    [data-mode="dark"] .form-select:focus {
-      border-color: var(--accent);
-      box-shadow: none;
-      outline: 1px solid var(--accent);
-    }
-    [data-mode="dark"] .result-line {
-      background-color: #2a2a2a;
-      border-left-color: var(--accent);
-    }
-    [data-mode="dark"] .radar-wrap {
-      border-color: var(--border);
-      background: var(--bg);
-      box-shadow: 0 1px 4px rgba(255,255,255,0.05);
-    }
-    [data-mode="dark"] .owasp-risk-rating .vector-link {
-      background: #2a2a2a;
-      border-color: var(--border);
-      color: var(--accent);
-    }
-    [data-mode="dark"] .owasp-risk-rating .vector-link:hover {
-      background: #3a3a3a;
-      color: #ffffff;
-      text-decoration: underline;
-    }
-    [data-mode="dark"] .risk-none { background-color: #00ff00; color: #000000; }
-    [data-mode="dark"] .risk-low { background-color: #60a5fa; color: #000000; }
-    [data-mode="dark"] .risk-medium { background-color: #fbbf24; color: #000000; }
-    [data-mode="dark"] .risk-high { background-color: #f87171; color: #000000; }
-    [data-mode="dark"] .risk-critical { background-color: #dc2626; color: #000000; }
-    [data-mode="dark"] .group-header {
-      border-bottom-color: var(--border);
-    }
-    [data-mode="dark"] .example-note {
-      background: #2a2a2a;
-      border-left-color: var(--accent);
-      color: var(--text-primary);
-    }
-    [data-mode="dark"] .footer-note {
-      color: #666666;
-    }
-    [data-mode="dark"] #resetBtn {
-      border-color: var(--border);
-      color: var(--text-secondary);
-    }
-    [data-mode="dark"] #resetBtn:hover {
-      background: #2a2a2a;
-      color: var(--text-primary);
-    }
-    [data-mode="dark"] .vector-tooltip {
-      background: #3a3a3a;
-      color: #b6b6b6;
-    }
-    .dark-mode-toggle {
-      position: absolute;
-      top: 1.2rem;
-      right: 1rem;
-      z-index: 100;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 0.4rem;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    [data-mode="dark"] .dark-mode-toggle {
-      color: var(--text-primary);
-    }
-    .dark-mode-toggle:hover {
-      background: rgba(0,0,0,0.05);
-      color: var(--accent);
-    }
-    [data-mode="dark"] .dark-mode-toggle:hover {
-      background: rgba(255,255,255,0.1);
-    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background-color: var(--bg);
+      font-family: var(--font-family);
+      background-color: var(--bg-primary);
       color: var(--text-primary);
-      font-size: var(--base-font-size);
-      line-height: 1.5;
-      padding: 1.2rem 0.8rem 2rem;
-      max-width: 1200px;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 1280px;
       margin: 0 auto;
-      overflow-x: hidden;
-      min-height: 100vh;
+      padding: 0 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
       position: relative;
     }
+
     h1 {
+      font-size: 2.25rem;
       font-weight: 700;
-      font-size: 2.5rem;
-      color: var(--text-primary);
-      margin-bottom: 0.4rem;
-      letter-spacing: -0.05px;
-      text-align: center;
-      padding-bottom: 0.3rem;
+      letter-spacing: -0.025em;
+      margin: 0;
     }
+    
+    .header p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+    .theme-toggle svg { width: 20px; height: 20px; }
+    .theme-toggle .sun-icon { display: none; }
+    [data-theme="dark"] .theme-toggle .moon-icon { display: none; }
+    [data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+    }
+
+    .summary-panel {
+      position: sticky;
+      top: 2rem;
+      height: calc(100vh - 4rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
     .card {
-      border: 1px solid var(--border);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
       border-radius: var(--border-radius);
-      background: var(--card-bg);
-      margin-bottom: 1rem;
-      box-shadow: none;
-      padding: 0.8rem;
+      box-shadow: 0 4px 6px var(--shadow-color);
+      padding: 1.5rem;
+      transition: background-color 0.3s, border-color 0.3s;
     }
-    .card h5 {
+
+    .card-title {
+      font-size: 1.05rem;
       font-weight: 600;
-      font-size: 1rem;
-      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .risk-overall-card { text-align: center; }
+    .risk-overall-card .label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
       margin-bottom: 0.5rem;
     }
+    #riskSeverityLabel {
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 0.5rem 1.5rem;
+      border-radius: 2rem;
+      display: inline-block;
+      min-width: 50px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .risk-factors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .risk-factor .label {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .risk-factor .value {
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      display: inline-block;
+      margin-top: 0.25rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .radar-chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      padding: 1rem;
+    }
+    #radarChart { max-width: 100%; height: auto; }
+    #radarChart .grid-line { stroke: var(--border-color); stroke-width: 1; }
+    #radarChart .axis-line { stroke: var(--border-color); stroke-width: 1; }
+    #radarChart .axis-label { fill: var(--text-secondary); font-size: 10px; font-weight: 500; }
+    #radarChart .data-polygon {
+      fill: var(--accent-primary);
+      fill-opacity: 0.25;
+      stroke: var(--accent-primary);
+      stroke-width: 2;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .vector-card .vector-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.75rem;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      word-break: break-all;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+    .vector-card .vector-link:hover {
+      border-color: var(--accent-primary);
+      background-color: var(--bg-secondary);
+    }
+    .vector-card .vector-link .copy-icon {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      margin-left: 1rem;
+      transition: color 0.3s;
+    }
+    .vector-card .vector-link:hover .copy-icon { color: var(--accent-primary); }
+    .vector-card .vector-link .copy-icon .check { display: none; }
+    .vector-card .vector-link.copied .copy-icon .copy { display: none; }
+    .vector-card .vector-link.copied .copy-icon .check { display: block; }
+    .vector-card .vector-link.copied { border-color: var(--opt-green); }
+
+    .calculator-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .factor-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .group-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        text-align: center;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        margin: 0;
+    }
+
+    .cards-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
     .controls label {
       display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 0.875rem;
       color: var(--text-secondary);
+      margin-bottom: 0.5rem;
     }
     .form-select {
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      padding: 0.5rem 0.8rem;
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 16px 12px;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+    [data-theme="dark"] .form-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a0a0a0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
     }
     .form-select:focus {
-      border-color: var(--accent);
-      box-shadow: none;
-      outline: 1px solid var(--accent);
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
     }
     .result-line {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      margin-top: 0.5rem;
-      padding: 0.4rem 0.6rem;
-      background-color: #f8f9fa;
-      border-left: 2px solid var(--accent);
-      border-radius: 0 6px 6px 0;
-    }
-    .radar-wrap {
-      max-width: 100%;
-      margin: 1.5rem auto 1.8rem;
-      text-align: center;
-      padding: 1rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--border-radius);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .radar-footer {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .lf-tag, .if-tag {
       font-weight: 600;
-      color: var(--text-primary);
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      text-align: center;
+      margin-top: 1rem;
+      transition: background-color 0.3s, color 0.3s;
     }
-    .radar-footer strong {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text-primary);
-    }
-    .risk-severity {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.6rem;
+
+    .actions-and-explainer {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-    }
-    .risk-severity strong {
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 6px;
-      min-width: 90px;
-      text-align: center;
-    }
-    .risk-none { background-color: #00ff00; color: #000000; }
-    .risk-low { background-color: #60a5fa; color: #000000; }
-    .risk-medium { background-color: #fbbf24; color: #000000; }
-    .risk-high { background-color: #f87171; color: #000000; }
-    .risk-critical { background-color: #dc2626; color: #000000; }
-    .risk-none,
-    .risk-low,
-    .risk-medium,
-    .risk-high,
-    .risk-critical {
-      padding: 4px 5px;
-      border-radius: 6px;
-      font-weight: 700;
-      white-space: nowrap;
-      display: inline-block;
-    }
-    .owasp-risk-rating {
-      text-align: center;
-      margin-top: 0.8rem;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      padding: 0.5rem 0;
-    }
-    .vector-label {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      color: var(--text-primary);
-      display: block;
-      letter-spacing: -0.01px;
-    }
-    .vector-link {
-      display: inline-block;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.9rem;
-      color: var(--accent);
-      text-decoration: none;
-      background: #f8f9fa;
-      padding: 0.5rem 0.8rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      margin: 0 auto;
-      max-width: 100%;
-      word-break: break-all;
-      box-sizing: border-box;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-      cursor: pointer;
-      user-select: all;
-    }
-    .vector-link:hover {
-      background: #e9ecef;
-      color: #000000;
-      text-decoration: underline;
-    }
-    .vector-tooltip {
-      font-size: 0.7rem;
-      color: #888;
-      margin-top: 0.4rem;
-      display: inline-block;
-      vertical-align: middle;
-      font-weight: 500;
-      line-height: 1;
-      padding: 0.2rem 0.4rem;
-      border-radius: 50%;
-      background: #f0f0f0;
-      width: 18px;
-      height: 18px;
-      text-align: center;
-      cursor: help;
-    }
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem 0.6rem 1.8rem;
-        font-size: 16px;
-      }
-      h1 { font-size: 2rem; padding-bottom: 0.2rem; }
-      .card { padding: 0.7rem; }
-      .controls label, .form-select, .result-line, .owasp-risk-rating .vector-label, .vector-link, #resetBtn, .example-note {
-        font-size: 0.875rem !important;
-        padding: 0.4rem 0.7rem !important;
-        margin-bottom: 0.4rem !important;
-      }
-      .radar-wrap { padding: 0.9rem; }
-      .radar-footer, .risk-severity, .owasp-risk-rating {
-        flex-direction: column;
-        gap: 0.3rem;
-        align-items: center;
-      }
-      .vector-link {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.7rem;
-        margin-bottom: 0.4rem;
-      }
-      .vector-tooltip {
-        font-size: 0.65rem;
-        margin-top: 0.3rem;
-        width: 16px;
-        height: 16px;
-      }
-      .owasp-risk-rating {
-        margin-top: 0.7rem;
-        padding: 0.4rem 0;
-      }
-      .group-header, .group-title {
-        font-size: 1.8rem !important;
-      }
-    }
-    .group-header {
-      margin: 1.8rem 0 1rem 0;
-      font-weight: 700;
-      font-size: 2.25rem;
-      color: var(--text-primary);
-      letter-spacing: -0.01px;
-      text-align: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 0.8rem;
-    }
-    .group-title {
-      font-weight: 700;
-      font-size: 1.6rem;
-      color: var(--text-primary);
-      letter-spacing: -0.02px;
-      padding: 0.3rem 0;
-      margin-bottom: 0.6rem;
-      text-align: center;
-    }
-    .row-section {
-      margin-bottom: 1.2rem;
-    }
-    .row-section:last-child {
-      margin-bottom: 1rem;
-    }
-    .example-note {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin: 4rem auto;
-      padding: 2rem;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border-left: 2px solid var(--accent);
-      line-height: 1.8;
-      max-width: 100%;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-    .footer-note {
-      font-size: 0.8rem;
-      color: #999;
-      text-align: center;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
+      gap: 1.5rem;
+      margin-top: 1rem;
     }
     #resetBtn {
       font-weight: 600;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-color);
       background: transparent;
       color: var(--text-secondary);
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      letter-spacing: -0.02px;
-      transition: background 0.2s;
+      border-radius: 0.375rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
     #resetBtn:hover {
-      background: #f8f9fa;
+      background: var(--bg-secondary);
+      border-color: var(--text-primary);
       color: var(--text-primary);
     }
-    .footer-note {
-      font-size: 0.8rem;
-      color: #999;
-      text-align: center;
-      margin-top: 0.5rem;
+    .explainer-section {
+      width: 100%;
+      max-width: 800px;
+    }
+    #explainer {
+      width: 100%;
       margin-bottom: 1rem;
     }
-    .opt-green { color: #00ff00; }      /* 0, 1 */
-    .opt-blue { color: #60a5fa; }       /* 2, 3 */
-    .opt-yellow { color: #ffca43; }     /* 4, 5 */
-    .opt-orange { color: #ff9100; }     /* 6, 7 */
-    .opt-red { color: #dc2626; }        /* 8, 9 */
+    .example-note {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      padding: 1.5rem;
+      background: var(--bg-primary);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 10px;
+    }
+    .example-note .explanation-item {
+        margin-bottom: 1rem;
+    }
+    .example-note .explanation-item:last-child {
+        margin-bottom: 0;
+    }
+    .example-note .explanation-detail {
+        padding-left: 1.25rem;
+        margin-top: 0.25rem;
+        font-style: italic;
+        color: color-mix(in srgb, var(--text-secondary) 85%, var(--bg-secondary));
+    }
+
+    .footer {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    .risk-none { background-color: var(--risk-none-bg); color: var(--risk-none-text); }
+    .risk-low { background-color: var(--risk-low-bg); color: var(--risk-low-text); }
+    .risk-medium { background-color: var(--risk-medium-bg); color: var(--risk-medium-text); }
+    .risk-high { background-color: var(--risk-high-bg); color: var(--risk-high-text); }
+    .risk-critical { background-color: var(--risk-critical-bg); color: var(--risk-critical-text); }
+
+    .opt-green { color: var(--opt-green) !important; }
+    .opt-blue { color: var(--opt-blue) !important; }
+    .opt-yellow { color: var(--opt-yellow) !important; }
+    .opt-orange { color: var(--opt-orange) !important; }
+    .opt-red { color: var(--opt-red) !important; }
+    select { color: var(--text-primary); }
+
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: 300px 1fr; }
+    }
+    @media (max-width: 992px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .summary-panel {
+        position: static;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .risk-overall-card, .radar-chart-container, .vector-card {
+        flex: 1 1 300px;
+      }
+      .radar-chart-container { min-height: 300px; }
+    }
+    @media (max-width: 768px) {
+      body { padding: 1rem 0.5rem; }
+      .container { padding: 0 0.5rem; }
+      h1 { font-size: 1.75rem; }
+      .header p { font-size: 1rem; }
+      .theme-toggle {
+        position: static;
+        transform: none;
+        margin: 1rem auto 0;
+      }
+      .cards-container { grid-template-columns: 1fr; }
+      .group-title { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>OWASP Risk Rating Calculator</h1>
-    <button class="dark-mode-toggle" aria-label="Toggle dark mode">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-      </svg>
-    </button>
-    <div class="radar-wrap">
-      <div class="radar-footer">
-        <span class="lf-tag">Likelihood Factor:</span>
-        <strong id="lfLabelCenter" class="risk-none">None</strong>
-        <span> | </span>
-        <span class="if-tag">Impact Factor:</span>
-        <strong id="ifLabelCenter" class="risk-none">None</strong>
-      </div>
-      <div class="risk-severity">
-        Overall Risk Severity:
-        <strong id="riskSeverityLabel" class="risk-none">None</strong>
-      </div>
-      <div class="owasp-risk-rating">
-        <div class="vector-label"></div>
-        <a href="#" id="scoreVectorLink" class="vector-link">
-          SL:0/M:0/O:0/S:0/ED:0/EE:0/A:0/ID:0/LC:0/LI:0/LAV:0/LAC:0/FD:0/RD:0/NC:0/PV:0
-        </a>
-      </div>
-      <div class="owasp-risk-rating">
-        <div class="vector-label"></div>
-        <a href="#" class="vector-link short-vector-link" id="shortVectorLink">
-          0000000000000000
-        </a>
-      </div>
-    </div>
-    <div class="group-header">Likelihood Factors</div>
-    <div class="row row-section g-2">
-      <div class="col-12 col-md-6">
-        <h6 class="group-title">Threat Agent Factors</h6>
-        <div class="card">
-          <h5>Threat Agent Factors</h5>
-          <div class="controls">
-            <label>Skill level</label>
-            <select id="skill" class="form-select"></select>
-            <label>Motive</label>
-            <select id="motive" class="form-select"></select>
-            <label>Opportunity</label>
-            <select id="opportunity" class="form-select"></select>
-            <label>Size</label>
-            <select id="size" class="form-select"></select>
-          </div>
-          <div class="mt-1">
-            <span id="tafLabel" class="result-line risk-none">None (TAF: 0)</span>
+    <header class="header">
+      <h1>OWASP Risk Rating Calculator</h1>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+    </header>
+
+    <main class="main-grid">
+      <aside class="summary-panel">
+        <div class="card risk-overall-card">
+          <div class="label">Overall Risk Severity</div>
+          <div id="riskSeverityLabel" class="risk-none">None</div>
+          <div class="risk-factors-grid">
+            <div class="risk-factor">
+              <div class="label">Likelihood</div>
+              <div id="lfLabelCenter" class="value risk-none">None (0.0)</div>
+            </div>
+            <div class="risk-factor">
+              <div class="label">Impact</div>
+              <div id="ifLabelCenter" class="value risk-none">None (0.0)</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-12 col-md-6">
-        <h6 class="group-title">Vulnerability Factors</h6>
-        <div class="card">
-          <h5>Vulnerability Factors</h5>
-          <div class="controls">
-            <label>Ease of discovery</label>
-            <select id="discovery" class="form-select"></select>
-            <label>Ease of exploit</label>
-            <select id="exploit" class="form-select"></select>
-            <label>Awareness</label>
-            <select id="awareness" class="form-select"></select>
-            <label>Intrusion detection</label>
-            <select id="detection" class="form-select"></select>
-          </div>
-          <div class="mt-1">
-            <span id="vfLabel" class="result-line risk-none">None (VF: 0)</span>
+
+        <div class="card radar-chart-container">
+            <svg id="radarChart" viewBox="0 0 200 200"></svg>
+        </div>
+
+        <div class="card vector-card">
+          <a href="#" class="vector-link" id="scoreVectorLink" title="Copy full vector URL">
+            <span id="scoreVectorText">SL:0/.../PV:0</span>
+            <span class="copy-icon">
+              <svg class="copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg class="check" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+          </a>
+          <a href="#" class="vector-link" id="shortVectorLink" title="Copy short vector URL">
+            <span id="shortVectorText">0000000000000000</span>
+            <span class="copy-icon">
+              <svg class="copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg class="check" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+          </a>
+        </div>
+      </aside>
+
+      <section class="calculator-section">
+        <div class="factor-group">
+          <h2 class="group-title">Likelihood Factors</h2>
+          <div class="cards-container">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Threat Agent Factors</h3></div>
+              <div class="controls">
+                <label for="skill">Skill Level</label><select id="skill" class="form-select"></select>
+                <label for="motive">Motive</label><select id="motive" class="form-select"></select>
+                <label for="opportunity">Opportunity</label><select id="opportunity" class="form-select"></select>
+                <label for="size">Size</label><select id="size" class="form-select"></select>
+              </div>
+              <div id="tafLabel" class="result-line risk-none">None (TAF: 0.0)</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Vulnerability Factors</h3></div>
+              <div class="controls">
+                <label for="discovery">Ease of Discovery</label><select id="discovery" class="form-select"></select>
+                <label for="exploit">Ease of Exploit</label><select id="exploit" class="form-select"></select>
+                <label for="awareness">Awareness</label><select id="awareness" class="form-select"></select>
+                <label for="detection">Intrusion Detection</label><select id="detection" class="form-select"></select>
+              </div>
+              <div id="vfLabel" class="result-line risk-none">None (VF: 0.0)</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="group-header">Impact Factors</div>
-    <div class="row row-section g-2">
-      <div class="col-12 col-md-6">
-        <h6 class="group-title">Technical Impact Factors</h6>
-        <div class="card">
-          <h5>Technical Impact Factors</h5>
-          <div class="controls">
-            <label>Loss of Confidentiality</label>
-            <select id="confidentiality" class="form-select"></select>
-            <label>Loss of Integrity</label>
-            <select id="integrity" class="form-select"></select>
-            <label>Loss of Availability</label>
-            <select id="availability" class="form-select"></select>
-            <label>Loss of Accountability</label>
-            <select id="accountability" class="form-select"></select>
-          </div>
-          <div class="mt-1">
-            <span id="tifLabel" class="result-line risk-none">None (TIF: 0)</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6">
-        <h6 class="group-title">Business Impact Factors</h6>
-        <div class="card">
-          <h5>Business Impact Factors</h5>
-          <div class="controls">
-            <label>Financial Damage</label>
-            <select id="financial" class="form-select"></select>
-            <label>Reputation Damage</label>
-            <select id="reputation" class="form-select"></select>
-            <label>Non-compliance</label>
-            <select id="noncompliance" class="form-select"></select>
-            <label>Privacy Violation</label>
-            <select id="privacy" class="form-select"></select>
-          </div>
-          <div class="mt-1">
-            <span id="bifLabel" class="result-line risk-none">None (BIF: 0)</span>
+
+        <div class="factor-group">
+          <h2 class="group-title">Impact Factors</h2>
+          <div class="cards-container">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Technical Impact Factors</h3></div>
+              <div class="controls">
+                <label for="confidentiality">Loss of Confidentiality</label><select id="confidentiality" class="form-select"></select>
+                <label for="integrity">Loss of Integrity</label><select id="integrity" class="form-select"></select>
+                <label for="availability">Loss of Availability</label><select id="availability" class="form-select"></select>
+                <label for="accountability">Loss of Accountability</label><select id="accountability" class="form-select"></select>
+              </div>
+              <div id="tifLabel" class="result-line risk-none">None (TIF: 0.0)</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">Business Impact Factors</h3></div>
+              <div class="controls">
+                <label for="financial">Financial Damage</label><select id="financial" class="form-select"></select>
+                <label for="reputation">Reputation Damage</label><select id="reputation" class="form-select"></select>
+                <label for="noncompliance">Non-Compliance</label><select id="noncompliance" class="form-select"></select>
+                <label for="privacy">Privacy Violation</label><select id="privacy" class="form-select"></select>
+              </div>
+              <div id="bifLabel" class="result-line risk-none">None (BIF: 0.0)</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="text-center mt-3">
-      <button id="resetBtn" class="btn">Reset</button>
-    </div>
-    <div class="text-center mt-5">
-      <select id="explainer" class="form-select" style="font-size: .9rem; max-width: 180px; margin: 0 auto;">
-        <option value="">Search</option>
-      </select>
-    </div>
-    <div class="example-note">
-      List penjelasan :
-    </div>
-    <div class="footer-note">
-      This Risk Rating Calculator is based on <a href="https://owasp.org/www-community/OWASP_Risk_Rating_Methodology">OWASP Risk Rating Methodology</a><br>PiwPawPaw
-    </div>
+        
+        <div class="actions-and-explainer">
+            <button id="resetBtn">Reset All Factors</button>
+            <div class="explainer-section">
+                <select id="explainer" class="form-select">
+                    <option value="">Select a factor to learn more...</option>
+                </select>
+                <div class="example-note">Hmmmm...I will explain this for u ❣️ ^-^</div>
+            </div>
+        </div>
+      </section>
+    </main>
+        <footer class="footer">
+      <p>An interactive tool to assess security risks based on the <a href="https://owasp.org/www-community/OWASP_Risk_Rating_Methodology">OWASP Risk Rating Methodology</a></p>Rewrite by VanPanPan
+    </footer>
   </div>
+  
   <script>
-    let isInitialLoad = true;
-    function encodeQuerySafe(str) {
-      return str.replace(/[ #?&[\]{}|^`"\\]/g, (char) => {
-        return '%' + char.charCodeAt(0).toString(16).padStart(2, '0');
-      });
-    }
+    'use strict';
+    const threatIds = ['skill', 'motive', 'opportunity', 'size'];
+    const vulnIds = ['discovery', 'exploit', 'awareness', 'detection'];
+    const techIds = ['confidentiality', 'integrity', 'availability', 'accountability'];
+    const bizIds = ['financial', 'reputation', 'noncompliance', 'privacy'];
+    const allFactorIds = [...threatIds, ...vulnIds, ...techIds, ...bizIds];
+
+    const factorOptions = {
+      skill: [[0, 'N/A', 'opt-green'], [1, 'Security penetration skills', 'opt-green'], [3, 'Network and programming skills', 'opt-blue'], [5, 'Advanced computer user', 'opt-yellow'], [6, 'Some technical skills', 'opt-orange'], [9, 'No technical skills', 'opt-red']],
+      motive: [[0, 'N/A', 'opt-green'], [1, 'Low or no reward', 'opt-green'], [4, 'Possible reward', 'opt-yellow'], [9, 'High reward', 'opt-red']],
+      opportunity: [[0, 'Full access or expensive resources required', 'opt-green'], [4, 'Special access or resources required', 'opt-yellow'], [7, 'Some access or resources required', 'opt-orange'], [9, 'No access or resources required', 'opt-red']],
+      size: [[0, 'N/A', 'opt-green'], [2, 'Developers or system administrators', 'opt-blue'], [4, 'Intranet users', 'opt-yellow'], [5, 'Partners', 'opt-yellow'], [6, 'Authenticated users', 'opt-orange'], [9, 'Anonymous Internet users', 'opt-red']],
+      discovery: [[0, 'N/A', 'opt-green'], [1, 'Practically impossible', 'opt-green'], [3, 'Difficult', 'opt-blue'], [7, 'Easy', 'opt-orange'], [9, 'Automated tools available', 'opt-red']],
+      exploit: [[0, 'N/A', 'opt-green'], [1, 'Theoretical', 'opt-green'], [3, 'Difficult', 'opt-blue'], [5, 'Easy', 'opt-yellow'], [9, 'Automated tools available', 'opt-red']],
+      awareness: [[0, 'N/A', 'opt-green'], [1, 'Unknown', 'opt-green'], [4, 'Hidden', 'opt-yellow'], [6, 'Obvious', 'opt-orange'], [9, 'Public knowledge', 'opt-red']],
+      detection: [[0, 'N/A', 'opt-green'], [1, 'Active detection in application', 'opt-green'], [3, 'Logged and reviewed', 'opt-blue'], [8, 'Logged without review', 'opt-red'], [9, 'Not logged', 'opt-red']],
+      confidentiality: [[0, 'N/A', 'opt-green'], [2, 'Minimal non-sensitive data disclosed', 'opt-blue'], [6, 'Minimal critical or extensive non-sensitive data', 'opt-orange'], [7, 'Extensive critical data disclosed', 'opt-orange'], [9, 'All data disclosed', 'opt-red']],
+      integrity: [[0, 'N/A', 'opt-green'], [1, 'Minimal slightly corrupt data', 'opt-green'], [3, 'Minimal seriously corrupt data', 'opt-blue'], [5, 'Extensive slightly corrupt data', 'opt-yellow'], [7, 'Extensive seriously corrupt data', 'opt-orange'], [9, 'All data totally corrupt', 'opt-red']],
+      availability: [[0, 'N/A', 'opt-green'], [1, 'Minimal secondary services interrupted', 'opt-green'], [5, 'Minimal primary or extensive secondary services interrupted', 'opt-yellow'], [7, 'Extensive primary services interrupted', 'opt-orange'], [9, 'All services completely lost', 'opt-red']],
+      accountability: [[0, 'N/A', 'opt-green'], [1, 'Fully traceable', 'opt-green'], [7, 'Possibly traceable', 'opt-orange'], [9, 'Completely anonymous', 'opt-red']],
+      financial: [[0, 'N/A', 'opt-green'], [1, 'Less than the cost to fix the vulnerability', 'opt-green'], [3, 'Minor effect on annual profit', 'opt-blue'], [7, 'Significant effect on annual profit', 'opt-orange'], [9, 'Bankruptcy', 'opt-red']],
+      reputation: [[0, 'N/A', 'opt-green'], [1, 'Minimal damage', 'opt-green'], [4, 'Loss of major accounts', 'opt-yellow'], [5, 'Loss of goodwill', 'opt-yellow'], [9, 'Brand damage', 'opt-red']],
+      noncompliance: [[0, 'N/A', 'opt-green'], [2, 'Minor violation', 'opt-blue'], [5, 'Clear violation', 'opt-yellow'], [7, 'High profile violation', 'opt-orange']],
+      privacy: [[0, 'N/A', 'opt-green'], [3, 'One individual', 'opt-blue'], [5, 'Hundreds of people', 'opt-yellow'], [7, 'Thousands of people', 'opt-orange'], [9, 'Millions of people', 'opt-red']]
+    };
+
+    const explanations = { motive: { 1: "The threat comes from individuals without financial incentives or clear technical motivation, such as teenagers experimenting out of curiosity or 'hacking for fun'. Low risk because it is unorganized and unsustainable.", 4: "The attacker has potential gains such as stealing data to sell on the dark web, or gaining illegal access for short-term financial benefits. This motivation is more serious and often seen in targeted attacks.", 9: "The threat comes from criminal organizations, nation-states, or armed groups with significant resources and strategic goals such as stealing intelligence, damaging critical infrastructure, or launching large-scale ransomware attacks. This is an extreme threat level that requires strong security response." }, skill: { 1: "The attacker has professional penetration testing skills, capable of exploiting complex vulnerabilities without automated tools. Typically from security teams or experienced cybercriminals.", 3: "The attacker understands basic networking and programming, able to exploit common vulnerabilities like SQLi or XSS. Often developers or admins misusing their knowledge.", 5: "The attacker is an average computer user who knows how to run ready-made exploit tools (such as Metasploit). They don’t understand code, but can execute automated attacks.", 6: "The attacker has minimal technical knowledge, maybe only clicking malicious links or sending phishing emails. Often part of large-scale spray-and-pray attacks.", 9: "The attacker has no technical skills at all, maybe just opening phishing emails or using weak passwords. This threat is very common but not targeted." }, opportunity: { 0: "The attack requires physical access, internal network, or expensive resources such as local servers or admin credentials. Very difficult for outsiders to reach.", 4: "The attacker needs special access such as logging in as a normal user, or connecting to a specific network. Still requires significant effort to reach the target.", 7: "The attacker only needs basic access such as public internet connection. No special authorization required. This is the most common threat level on the internet.", 9: "No access barriers the attack can be launched from anywhere without authentication. This is the most dangerous condition: the system is fully open." }, size: { 2: "Threats only come from a small group such as system admins or internal developers. The number of attackers is limited and usually controlled by organizational policy.", 4: "Threats come from internal users such as employees or staff. They have limited access, but the number is large enough to increase leakage risk.", 5: "Threats come from business partners, vendors, or external parties with limited access to the system. Weak access control increases insider threat risk.", 6: "Threats come from authenticated users such as customers logged into the system. The number is large, and each account can be an entry point.", 9: "Threats come from anyone on the internet without authentication. This is the most dangerous scenario: the system is open to everyone, including global attackers." }, discovery: { 1: "The vulnerability is very hidden, undetectable by automated tools, requires deep manual analysis, or exists only in undocumented code. Very difficult to find.", 3: "The vulnerability requires technical effort to discover, such as special scanning, reverse engineering, or manual testing. Not detected by standard tools.", 7: "The vulnerability is easily found using automated tools (such as Nikto, Burp Suite, or OWASP ZAP). Plenty of public documentation exists on how to find it.", 9: "The vulnerability is well-known, published in CVEs, with public exploits available, and automated tools can detect it instantly. This is the most dangerous as it is mass-exploited." }, exploit: { 1: "Exploitation is only theoretically possible, no practical evidence, and requires rare conditions. No tools available, and exploitation requires advanced expertise.", 3: "Exploitation is difficult, requiring special adjustments, long time, or combining several techniques. No public exploit, only experts can execute.", 5: "Exploitation is easy, public scripts, online tutorials, and ready-to-use tools exist. Doesn’t require advanced skills, but still some effort.", 9: "Exploitation is fully automated with public exploit code available on GitHub, Metasploit, or the dark web. Anyone can run it within seconds without technical knowledge." }, awareness: { 1: "The vulnerability is unknown to the public, even to the vendor. This is a very dangerous zero-day because no patch or mitigation is available.", 4: "The vulnerability is known only to a small part of the security community, such as researchers. Not widely documented publicly.", 6: "The vulnerability is known by many developers and admins, warnings may exist internally but not published. High risk because many know, but not yet fixed.", 9: "The vulnerability is very famous, with articles, videos, and public forums discussing it. The vendor has released a patch, but many systems remain unpatched. This is the most common threat." }, detection: { 1: "The system has active detection such as WAF, IDS, or SIEM that blocks and alerts immediately. Attacks are detected and stopped right away.", 3: "Activities are logged and periodically reviewed, such as daily audit log checks. Attacks can be detected, but not in real-time.", 8: "Activities are logged but never reviewed. Logs are just stored without analysis. Attacks may go unnoticed for months.", 9: "No logging at all, no trace of activity. Attacks can happen without evidence and will only be noticed when damage becomes visible." }, confidentiality: { 2: "Only non-sensitive data leaks, such as usernames or IDs not linked to identity. No legal or reputational risk.", 6: "Sensitive data leaks, such as emails, phone numbers, or activity history. Could be used for phishing or social engineering. Risk of GDPR/privacy violations.", 7: "Critical data leaks, such as password hashes, access tokens, or internal documents. Can be used as entry points for other systems or further attacks.", 9: "All data leaks, including customer databases, confidential documents, and financial information. This is the worst-case data breach." }, integrity: { 1: "Data undergoes minor changes, such as typos on a webpage. Doesn’t affect functionality or user trust.", 3: "Some critical data is corrupted, such as incorrect account balances or altered system configs. Causes small operational issues.", 5: "A large amount of data is corrupted, such as modified transaction history or system logs. Causes user distrust and high recovery costs.", 7: "Critical data is widely corrupted, such as customer databases, firewall configs, or authentication systems. Causes major system failures.", 9: "All data is totally corrupted, no way to restore without backups. This is like ransomware or data wiping attacks." }, availability: { 1: "Secondary services are disrupted, such as non-core features (chatbot, notifications). Doesn’t affect main operations.", 5: "Main services temporarily disrupted, such as website down for a few hours. Affects productivity and revenue, but quick recovery is possible.", 7: "Main services disrupted for a long time, such as payment systems or login down for days. Causes major financial losses and customer churn.", 9: "All services completely lost, servers shut down, data deleted, systems inaccessible. This is like massive DDoS or ransomware without keys." }, accountability: { 1: "All access is tracked, full audit trail available, and activity can be linked to individuals. No anonymity.", 7: "Some access is trackable but logs have gaps. For example, only IPs logged, not users. Difficult to determine actual attacker.", 9: "No trace at all, all activity is anonymous, or the system doesn’t log anything. Attacks can happen without consequences." }, financial: { 1: "Repair cost is greater than the loss, such as resetting passwords or fixing a webpage. No significant financial impact.", 3: "Small losses such as additional audit costs or customer notification. Doesn’t affect annual profit.", 7: "Major losses such as regulatory fines, recovery costs, or lost revenue during downtime. Can significantly affect net income.", 9: "Losses threaten business survival, such as bankruptcy, mass lawsuits, or loss of business license. This is an intolerable risk." }, reputation: { 1: "Minimal impact, such as a single customer complaint. No media coverage or trust loss.", 4: "Loss of major customers, such as large clients canceling contracts. Affects long-term revenue.", 5: "Loss of public trust, customers become skeptical, media coverage damages the brand. Hard to recover without large PR campaigns.", 9: "Permanent brand damage, the company becomes associated with poor security. Investors withdraw, employees leave, and the market avoids the product." }, noncompliance: { 2: "Minor violation such as failing one point in internal policy. No legal sanction, just a warning.", 5: "Clear violation such as breaking GDPR, HIPAA, or PCI-DSS. Can lead to fines and mandatory audits.", 7: "High-profile violation, such as data breaches of millions reported in media. Triggers government investigation and destroys reputation." }, privacy: { 3: "Data of a single individual leaked, such as name and email. Low risk, but may still be a privacy breach if unreported.", 5: "Hundreds of people affected, such as employee or small customer data. May trigger privacy authority reports and lawsuits.", 7: "Thousands of people affected, such as customer data of an online service. Triggers regulator investigations and public trust loss.", 9: "Millions of people affected, such as a national database or public service breach. Large-scale consequences: legal, political, and social." } };
+
+    const fieldToCode = {
+      skill: 'SL', motive: 'M', opportunity: 'O', size: 'S',
+      discovery: 'ED', exploit: 'EE', awareness: 'A', detection: 'ID',
+      confidentiality: 'LC', integrity: 'LI', availability: 'LAV', accountability: 'LAC',
+      financial: 'FD', reputation: 'RD', noncompliance: 'NC', privacy: 'PV'
+    };
+    const codeToField = Object.fromEntries(Object.entries(fieldToCode).map(([k, v]) => [v, k]));
+
     function getWeight(id){
       const val = Number(document.getElementById(id).value);
       return val * 0.25;
@@ -587,373 +610,29 @@
       if (lfLevel === 'High' && ifLevel === 'High') return 'Critical';
       return 'None';
     }
-    function parseScoreVectorFromUrl() {
-      const hash = window.location.hash.substring(1);
-      if (!hash) return;
-      const params = new URLSearchParams(hash);
-      const vectorStr = params.get('owasp-risk-rating');
-      if (!vectorStr) return;
-      const pairs = vectorStr.split('/');
-      let retries = 0;
-      const maxRetries = 10;
-      const interval = 100;
-      function trySetValues() {
-        let allFound = true;
-        for (const pair of pairs) {
-          const [code, value] = pair.split(':');
-          const field = codeToField[code];
-          if (!field) continue;
-          const el = document.getElementById(field);
-          if (!el) {
-            allFound = false;
-            break;
-          }
-          el.value = value;
+
+    function updateRiskLabel(element, level, prefix, value) {
+      element.textContent = `${level} (${prefix}: ${formatNum(value)})`;
+      element.className = `result-line risk-${level.toLowerCase()}`;
+    }
+    
+    function updateSummaryLabel(element, level, value, prefix = '') {
+        const text = prefix ? `${level} (${prefix}: ${formatNum(value)})` : level;
+        element.textContent = text;
+        element.className = `value risk-${level.toLowerCase()}`;
+        if (element.id === 'riskSeverityLabel') {
+            element.className = `risk-${level.toLowerCase()}`;
         }
-        if (allFound) {
-          calculate();
-          return;
-        }
-        if (retries < maxRetries) {
-          retries++;
-          setTimeout(trySetValues, interval);
-        } else {
-          console.warn('Failed to set values from hash after 10 retries.');
-        }
-      }
-      trySetValues();
-    }
-    function parseShortHashFromUrl() {
-      const hash = window.location.hash.substring(1);
-      if (!hash) return;
-      const params = new URLSearchParams(hash);
-      const shortVector = params.get('owasp-risk-rating-short');
-      if (!shortVector) return;
-      if (shortVector.length !== 16 || !/^\d{16}$/.test(shortVector)) {
-        console.warn('Invalid short vector format. Must be 16 digits.');
-        return;
-      }
-      const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
-      for (let i = 0; i < fields.length; i++) {
-        const field = fields[i];
-        const value = shortVector[i];
-        const el = document.getElementById(field);
-        if (el) el.value = value;
-      }
-      calculate();
-    }
-    function buildScoreVector() {
-      const entries = [];
-      for (const [field, code] of Object.entries(fieldToCode)) {
-        const value = document.getElementById(field)?.value || 0;
-        entries.push(`${code}:${value}`);
-      }
-      return entries.join('/');
-    }
-    function buildShortVector() {
-      const fields = ['skill','motive','opportunity','size','discovery','exploit','awareness','detection','confidentiality','integrity','availability','accountability','financial','reputation','noncompliance','privacy'];
-      return fields.map(field => document.getElementById(field)?.value || 0).join('');
-    }
-    function updateUrlWithScoreVector() {
-      const fullVector = buildScoreVector();
-      const encodedFull = encodeQuerySafe(fullVector);
-      window.location.replace(window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`);
-    }
-    function updateShortVectorLink() {
-      const shortVector = buildShortVector();
-      const link = document.getElementById('shortVectorLink');
-      link.textContent = shortVector;
-    }
-    function populate(id, arr){
-      const sel=document.getElementById(id);
-      sel.innerHTML='';
-      for(const [num,desc,cls] of arr){
-        const opt=document.createElement('option');
-        opt.value=num;
-        opt.textContent = `${num} - ${desc}`;
-        if(cls) opt.className=cls;
-        sel.appendChild(opt);
-      }
-    }
-    const skillOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Security penetration skills', 'opt-green'],
-      [3, 'Network and programming skill', 'opt-blue'],
-      [5, 'advanced computer user', 'opt-yellow'],
-      [6, 'some technical skill', 'opt-orange'],
-      [9, 'no technical skills', 'opt-red']
-    ];
-
-    const motiveOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'low or no reward', 'opt-green'],
-      [4, 'Possible reward', 'opt-yellow'],
-      [9, 'High reward', 'opt-red']
-    ];
-
-    const opportunityOpts = [
-      [0, 'Full access or expensive resources required', 'opt-green'],
-      [4, 'special access or resources required', 'opt-yellow'],
-      [7, 'some access or resources required', 'opt-orange'],
-      [9, 'no access or resources required', 'opt-red']
-    ];
-
-    const sizeOpts = [
-      [0, 'N/A', 'opt-green'],
-      [2, 'Developer or system administrators', 'opt-blue'],
-      [4, 'Intranet users', 'opt-yellow'],
-      [5, 'Partners', 'opt-yellow'],
-      [6, 'Authenticated users', 'opt-orange'],
-      [9, 'Anonymous Internet users', 'opt-red']
-    ];
-
-    const discoveryOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Practically impossible', 'opt-green'],
-      [3, 'Difficult', 'opt-blue'],
-      [7, 'Easy', 'opt-orange'],
-      [9, 'Automated tools available', 'opt-red']
-    ];
-
-    const exploitOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Theoretical', 'opt-green'],
-      [3, 'Difficult', 'opt-blue'],
-      [5, 'Easy', 'opt-yellow'],
-      [9, 'Automated tools available', 'opt-red']
-    ];
-
-    const awarenessOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Unknown', 'opt-green'],
-      [4, 'Hidden', 'opt-yellow'],
-      [6, 'Obvious', 'opt-orange'],
-      [9, 'Public knowledge', 'opt-red']
-    ];
-
-    const detectionOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Active detection in application', 'opt-green'],
-      [3, 'Logged and reviewed', 'opt-blue'],
-      [8, 'Logged without review', 'opt-red'],
-      [9, 'Not logged', 'opt-red']
-    ];
-
-    const confidentialityOpts = [
-      [0, 'N/A', 'opt-green'],
-      [2, 'Minimal non-sensitive data disclosed', 'opt-blue'],
-      [6, 'Minimal critical data or extensive non-sensitive data disclosed', 'opt-orange'],
-      [7, 'Extensive critical data disclosed', 'opt-orange'],
-      [9, 'All data disclosed', 'opt-red']
-    ];
-
-    const integrityOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Minimal slightly corrupt data', 'opt-green'],
-      [3, 'Minimal seriously corrupt data', 'opt-blue'],
-      [5, 'Extensive slightly corrupt data', 'opt-yellow'],
-      [7, 'Extensive seriously corrupt data', 'opt-orange'],
-      [9, 'All data totally corrupt', 'opt-red']
-    ];
-
-    const availabilityOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Minimal secondary services interrupted', 'opt-green'],
-      [5, 'Minimal primary or extensive secondary services interrupted', 'opt-yellow'],
-      [7, 'Extensive primary services interrupted', 'opt-orange'],
-      [9, 'All services completely lost', 'opt-red']
-    ];
-
-    const accountabilityOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Fully traceable', 'opt-green'],
-      [7, 'Possibly traceable', 'opt-orange'],
-      [9, 'Completely anonymous', 'opt-red']
-    ];
-
-    const financialOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Less than the cost to fix the vulnerability', 'opt-green'],
-      [3, 'Minor effect on annual profit', 'opt-blue'],
-      [7, 'Significant effect on annual profit', 'opt-orange'],
-      [9, 'Bankruptcy', 'opt-red']
-    ];
-
-    const reputationOpts = [
-      [0, 'N/A', 'opt-green'],
-      [1, 'Minimal damage', 'opt-green'],
-      [4, 'Loss of major accounts', 'opt-yellow'],
-      [5, 'Loss of goodwill', 'opt-yellow'],
-      [9, 'Brand damage', 'opt-red']
-    ];
-
-    const noncomplianceOpts = [
-      [0, 'N/A', 'opt-green'],
-      [2, 'Minor violation', 'opt-blue'],
-      [5, 'Clear violation', 'opt-yellow'],
-      [7, 'High profile violation', 'opt-orange']
-    ];
-
-    const privacyOpts = [
-      [0, 'N/A', 'opt-green'],
-      [3, 'One individual', 'opt-blue'],
-      [5, 'Hundreds of people', 'opt-yellow'],
-      [7, 'Thousands of people', 'opt-orange'],
-      [9, 'Millions of people', 'opt-red']
-    ];
-
-    const allOpts = {
-      skill: skillOpts, motive: motiveOpts, opportunity: opportunityOpts, size: sizeOpts,
-      discovery: discoveryOpts, exploit: exploitOpts, awareness: awarenessOpts, detection: detectionOpts,
-      confidentiality: confidentialityOpts, integrity: integrityOpts, availability: availabilityOpts, accountability: accountabilityOpts,
-      financial: financialOpts, reputation: reputationOpts, noncompliance: noncomplianceOpts, privacy: privacyOpts
-    };
-
-    const explanations = {
-      motive: {
-        1: "The threat comes from individuals without financial incentives or clear technical motivation, such as teenagers experimenting out of curiosity or 'hacking for fun'. Low risk because it is unorganized and unsustainable.",
-        4: "The attacker has potential gains such as stealing data to sell on the dark web, or gaining illegal access for short-term financial benefits. This motivation is more serious and often seen in targeted attacks.",
-        9: "The threat comes from criminal organizations, nation-states, or armed groups with significant resources and strategic goals such as stealing intelligence, damaging critical infrastructure, or launching large-scale ransomware attacks. This is an extreme threat level that requires strong security response."
-      },
-      skill: {
-        1: "The attacker has professional penetration testing skills, capable of exploiting complex vulnerabilities without automated tools. Typically from security teams or experienced cybercriminals.",
-        3: "The attacker understands basic networking and programming, able to exploit common vulnerabilities like SQLi or XSS. Often developers or admins misusing their knowledge.",
-        5: "The attacker is an average computer user who knows how to run ready-made exploit tools (such as Metasploit). They don’t understand code, but can execute automated attacks.",
-        6: "The attacker has minimal technical knowledge, maybe only clicking malicious links or sending phishing emails. Often part of large-scale spray-and-pray attacks.",
-        9: "The attacker has no technical skills at all, maybe just opening phishing emails or using weak passwords. This threat is very common but not targeted."
-      },
-      opportunity: {
-        0: "The attack requires physical access, internal network, or expensive resources such as local servers or admin credentials. Very difficult for outsiders to reach.",
-        4: "The attacker needs special access such as logging in as a normal user, or connecting to a specific network. Still requires significant effort to reach the target.",
-        7: "The attacker only needs basic access such as public internet connection. No special authorization required. This is the most common threat level on the internet.",
-        9: "No access barriers the attack can be launched from anywhere without authentication. This is the most dangerous condition: the system is fully open."
-      },
-      size: {
-        2: "Threats only come from a small group such as system admins or internal developers. The number of attackers is limited and usually controlled by organizational policy.",
-        4: "Threats come from internal users such as employees or staff. They have limited access, but the number is large enough to increase leakage risk.",
-        5: "Threats come from business partners, vendors, or external parties with limited access to the system. Weak access control increases insider threat risk.",
-        6: "Threats come from authenticated users such as customers logged into the system. The number is large, and each account can be an entry point.",
-        9: "Threats come from anyone on the internet without authentication. This is the most dangerous scenario: the system is open to everyone, including global attackers."
-      },
-      discovery: {
-        1: "The vulnerability is very hidden, undetectable by automated tools, requires deep manual analysis, or exists only in undocumented code. Very difficult to find.",
-        3: "The vulnerability requires technical effort to discover, such as special scanning, reverse engineering, or manual testing. Not detected by standard tools.",
-        7: "The vulnerability is easily found using automated tools (such as Nikto, Burp Suite, or OWASP ZAP). Plenty of public documentation exists on how to find it.",
-        9: "The vulnerability is well-known, published in CVEs, with public exploits available, and automated tools can detect it instantly. This is the most dangerous as it is mass-exploited."
-      },
-      exploit: {
-        1: "Exploitation is only theoretically possible, no practical evidence, and requires rare conditions. No tools available, and exploitation requires advanced expertise.",
-        3: "Exploitation is difficult, requiring special adjustments, long time, or combining several techniques. No public exploit, only experts can execute.",
-        5: "Exploitation is easy, public scripts, online tutorials, and ready-to-use tools exist. Doesn’t require advanced skills, but still some effort.",
-        9: "Exploitation is fully automated with public exploit code available on GitHub, Metasploit, or the dark web. Anyone can run it within seconds without technical knowledge."
-      },
-      awareness: {
-        1: "The vulnerability is unknown to the public, even to the vendor. This is a very dangerous zero-day because no patch or mitigation is available.",
-        4: "The vulnerability is known only to a small part of the security community, such as researchers. Not widely documented publicly.",
-        6: "The vulnerability is known by many developers and admins, warnings may exist internally but not published. High risk because many know, but not yet fixed.",
-        9: "The vulnerability is very famous, with articles, videos, and public forums discussing it. The vendor has released a patch, but many systems remain unpatched. This is the most common threat."
-      },
-      detection: {
-        1: "The system has active detection such as WAF, IDS, or SIEM that blocks and alerts immediately. Attacks are detected and stopped right away.",
-        3: "Activities are logged and periodically reviewed, such as daily audit log checks. Attacks can be detected, but not in real-time.",
-        8: "Activities are logged but never reviewed. Logs are just stored without analysis. Attacks may go unnoticed for months.",
-        9: "No logging at all, no trace of activity. Attacks can happen without evidence and will only be noticed when damage becomes visible."
-      },
-      confidentiality: {
-        2: "Only non-sensitive data leaks, such as usernames or IDs not linked to identity. No legal or reputational risk.",
-        6: "Sensitive data leaks, such as emails, phone numbers, or activity history. Could be used for phishing or social engineering. Risk of GDPR/privacy violations.",
-        7: "Critical data leaks, such as password hashes, access tokens, or internal documents. Can be used as entry points for other systems or further attacks.",
-        9: "All data leaks, including customer databases, confidential documents, and financial information. This is the worst-case data breach."
-      },
-      integrity: {
-        1: "Data undergoes minor changes, such as typos on a webpage. Doesn’t affect functionality or user trust.",
-        3: "Some critical data is corrupted, such as incorrect account balances or altered system configs. Causes small operational issues.",
-        5: "A large amount of data is corrupted, such as modified transaction history or system logs. Causes user distrust and high recovery costs.",
-        7: "Critical data is widely corrupted, such as customer databases, firewall configs, or authentication systems. Causes major system failures.",
-        9: "All data is totally corrupted, no way to restore without backups. This is like ransomware or data wiping attacks."
-      },
-      availability: {
-        1: "Secondary services are disrupted, such as non-core features (chatbot, notifications). Doesn’t affect main operations.",
-        5: "Main services temporarily disrupted, such as website down for a few hours. Affects productivity and revenue, but quick recovery is possible.",
-        7: "Main services disrupted for a long time, such as payment systems or login down for days. Causes major financial losses and customer churn.",
-        9: "All services completely lost, servers shut down, data deleted, systems inaccessible. This is like massive DDoS or ransomware without keys."
-      },
-      accountability: {
-        1: "All access is tracked, full audit trail available, and activity can be linked to individuals. No anonymity.",
-        7: "Some access is trackable but logs have gaps. For example, only IPs logged, not users. Difficult to determine actual attacker.",
-        9: "No trace at all, all activity is anonymous, or the system doesn’t log anything. Attacks can happen without consequences."
-      },
-      financial: {
-        1: "Repair cost is greater than the loss, such as resetting passwords or fixing a webpage. No significant financial impact.",
-        3: "Small losses such as additional audit costs or customer notification. Doesn’t affect annual profit.",
-        7: "Major losses such as regulatory fines, recovery costs, or lost revenue during downtime. Can significantly affect net income.",
-        9: "Losses threaten business survival, such as bankruptcy, mass lawsuits, or loss of business license. This is an intolerable risk."
-      },
-      reputation: {
-        1: "Minimal impact, such as a single customer complaint. No media coverage or trust loss.",
-        4: "Loss of major customers, such as large clients canceling contracts. Affects long-term revenue.",
-        5: "Loss of public trust, customers become skeptical, media coverage damages the brand. Hard to recover without large PR campaigns.",
-        9: "Permanent brand damage, the company becomes associated with poor security. Investors withdraw, employees leave, and the market avoids the product."
-      },
-      noncompliance: {
-        2: "Minor violation such as failing one point in internal policy. No legal sanction, just a warning.",
-        5: "Clear violation such as breaking GDPR, HIPAA, or PCI-DSS. Can lead to fines and mandatory audits.",
-        7: "High-profile violation, such as data breaches of millions reported in media. Triggers government investigation and destroys reputation."
-      },
-      privacy: {
-        3: "Data of a single individual leaked, such as name and email. Low risk, but may still be a privacy breach if unreported.",
-        5: "Hundreds of people affected, such as employee or small customer data. May trigger privacy authority reports and lawsuits.",
-        7: "Thousands of people affected, such as customer data of an online service. Triggers regulator investigations and public trust loss.",
-        9: "Millions of people affected, such as a national database or public service breach. Large-scale consequences: legal, political, and social."
-      }
-    };
-
-    for(const id in allOpts) populate(id, allOpts[id]);
-
-    const threatIds = ['skill','motive','opportunity','size'];
-    const vulnIds = ['discovery','exploit','awareness','detection'];
-    const techIds = ['confidentiality','integrity','availability','accountability'];
-    const bizIds = ['financial','reputation','noncompliance','privacy'];
-
-    const fieldToCode = {
-      skill: 'SL',
-      motive: 'M',
-      opportunity: 'O',
-      size: 'S',
-      discovery: 'ED',
-      exploit: 'EE',
-      awareness: 'A',
-      detection: 'ID',
-      confidentiality: 'LC',
-      integrity: 'LI',
-      availability: 'LAV',
-      accountability: 'LAC',
-      financial: 'FD',
-      reputation: 'RD',
-      noncompliance: 'NC',
-      privacy: 'PV'
-    };
-
-    const codeToField = {};
-    for (const [field, code] of Object.entries(fieldToCode)) {
-      codeToField[code] = field;
     }
 
-    function calculate(){
+    function calculateAndRender() {
       const tafSum = sumWeight(threatIds);
       const vfSum = sumWeight(vulnIds);
-      const lf = (tafSum + vfSum) / 2;
       const tifSum = sumWeight(techIds);
       const bifSum = sumWeight(bizIds);
-      const ifVal = bifSum;
 
-      const tafLabel = document.getElementById('tafLabel');
-      const vfLabel = document.getElementById('vfLabel');
-      const tifLabel = document.getElementById('tifLabel');
-      const bifLabel = document.getElementById('bifLabel');
-      const lfLabelCenter = document.getElementById('lfLabelCenter');
-      const ifLabelCenter = document.getElementById('ifLabelCenter');
-      const riskSeverityLabel = document.getElementById('riskSeverityLabel');
+      const lf = (tafSum + vfSum) / 2;
+      const ifVal = bifSum;
 
       const tafLevel = scoreLabelSum(tafSum);
       const vfLevel = scoreLabelSum(vfSum);
@@ -963,285 +642,264 @@
       const ifLevel = scoreLabelSum(ifVal);
       const overallRisk = calculateOverallRisk(lf, ifVal);
 
-      tafLabel.textContent = `${tafLevel} (TAF: ${formatNum(tafSum)})`;
-      vfLabel.textContent = `${vfLevel} (VF: ${formatNum(vfSum)})`;
-      tifLabel.textContent = `${tifLevel} (TIF: ${formatNum(tifSum)})`;
-      bifLabel.textContent = `${bifLevel} (BIF: ${formatNum(bifSum)})`;
-      lfLabelCenter.textContent = `${lfLevel} (LF: ${formatNum(lf)})`;
-      ifLabelCenter.textContent = `${ifLevel} (IF: ${formatNum(ifVal)})`;
-      riskSeverityLabel.textContent = overallRisk;
+      updateRiskLabel(document.getElementById('tafLabel'), tafLevel, 'TAF', tafSum);
+      updateRiskLabel(document.getElementById('vfLabel'), vfLevel, 'VF', vfSum);
+      updateRiskLabel(document.getElementById('tifLabel'), tifLevel, 'TIF', tifSum);
+      updateRiskLabel(document.getElementById('bifLabel'), bifLevel, 'BIF', bifSum);
+      
+      updateSummaryLabel(document.getElementById('lfLabelCenter'), lfLevel, lf, 'LF');
+      updateSummaryLabel(document.getElementById('ifLabelCenter'), ifLevel, ifVal, 'IF');
+      updateSummaryLabel(document.getElementById('riskSeverityLabel'), overallRisk, 0);
 
-      tafLabel.className = 'result-line risk-' + tafLevel.toLowerCase().replace(' ', '-');
-      vfLabel.className = 'result-line risk-' + vfLevel.toLowerCase().replace(' ', '-');
-      tifLabel.className = 'result-line risk-' + tifLevel.toLowerCase().replace(' ', '-');
-      bifLabel.className = 'result-line risk-' + bifLevel.toLowerCase().replace(' ', '-');
-      lfLabelCenter.className = 'risk-' + lfLevel.toLowerCase().replace(' ', '-');
-      ifLabelCenter.className = 'risk-' + ifLevel.toLowerCase().replace(' ', '-');
-      riskSeverityLabel.className = 'risk-' + overallRisk.toLowerCase().replace(' ', '-');
+      updateVectors();
+      updateRadarChart(tafSum, vfSum, tifSum, bifSum); 
+      updateVectorLinks();
+    }
 
-      const scoreVector = buildScoreVector();
-      const link = document.getElementById('scoreVectorLink');
-      link.textContent = scoreVector;
-      link.href = `#owasp-risk-rating=${encodeQuerySafe(scoreVector)}`;
-      updateShortVectorLink();
+    const buildVector = (short = false) => {
+      if (short) {
+        return allFactorIds.map(id => document.getElementById(id).value).join('');
+      }
+      return allFactorIds.map(id => `${fieldToCode[id]}:${document.getElementById(id).value}`).join('/');
+    };
+
+    function updateVectors() {
+      document.getElementById('scoreVectorText').textContent = buildVector();
+      document.getElementById('shortVectorText').textContent = buildVector(true);
+    }
+
+    function updateVectorLinks() {
+        const fullVector = buildVector();
+        const shortVector = buildVector(true);
+        document.getElementById('scoreVectorLink').href = `#owasp-risk-rating=${fullVector}`;
+        document.getElementById('shortVectorLink').href = `#owasp-risk-rating-short=${shortVector}`;
+    }
+
+    function updateBrowserUrl() {
+        const shortVector = buildVector(true);
+        const shortHash = `#owasp-risk-rating-short=${shortVector}`;
+        if (history.replaceState) {
+            history.replaceState(null, '', shortHash);
+        }
+    }
+
+    function parseVectorsFromUrl() {
+        const hash = window.location.hash.substring(1);
+        if (!hash) return false;
+
+        const params = new URLSearchParams(hash);
+        let valuesSet = false;
+
+        const fullVector = params.get('owasp-risk-rating');
+        if (fullVector) {
+            const pairs = fullVector.split('/');
+            for (const pair of pairs) {
+                const [code, value] = pair.split(':');
+                const field = codeToField[code];
+                if (field && document.getElementById(field)) {
+                    document.getElementById(field).value = value;
+                    valuesSet = true;
+                }
+            }
+        }
+
+        if (!valuesSet) {
+            const shortVector = params.get('owasp-risk-rating-short');
+            if (shortVector && shortVector.length === 16 && /^\d{16}$/.test(shortVector)) {
+                allFactorIds.forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = shortVector[i];
+                });
+                valuesSet = true;
+            }
+        }
+
+        if (valuesSet) {
+            allFactorIds.forEach(id => applySelectColor(document.getElementById(id)));
+            calculateAndRender();
+        }
+        return valuesSet;
+    }
+
+    function createRadarChart() {
+        const svg = document.getElementById('radarChart');
+        const size = 200;
+        const center = size / 2;
+        const radius = size * 0.4;
+        const levels = 4;
+        const labels = ['TA', 'VF', 'TI', 'BI'];
+
+        for (let i = 1; i <= levels; i++) {
+            const r = radius * (i / levels);
+            const grid = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            const points = labels.map((_, j) => {
+                const angle = (j * 2 * Math.PI / labels.length) - (Math.PI / 2);
+                return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
+            }).join(' ');
+            grid.setAttribute('points', points);
+            grid.setAttribute('class', 'grid-line');
+            grid.setAttribute('fill', 'none');
+            svg.appendChild(grid);
+        }
+
+        labels.forEach((label, i) => {
+            const angle = (i * 2 * Math.PI / labels.length) - (Math.PI / 2);
+            const axis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            axis.setAttribute('x1', center); axis.setAttribute('y1', center);
+            axis.setAttribute('x2', center + radius * Math.cos(angle));
+            axis.setAttribute('y2', center + radius * Math.sin(angle));
+            axis.setAttribute('class', 'axis-line');
+            svg.appendChild(axis);
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute('x', center + (radius + 10) * Math.cos(angle));
+            text.setAttribute('y', center + (radius + 10) * Math.sin(angle));
+            text.textContent = label;
+            text.setAttribute('class', 'axis-label');
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('dominant-baseline', 'middle');
+            svg.appendChild(text);
+        });
+
+        const dataPolygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        dataPolygon.setAttribute('id', 'radarData');
+        dataPolygon.setAttribute('class', 'data-polygon');
+        svg.appendChild(dataPolygon);
+    }
+
+    function updateRadarChart(taf, vf, tif, bif) {
+        const data = [taf, vf, tif, bif];
+        const size = 200;
+        const center = size / 2;
+        const radius = size * 0.4;
+        const maxVal = 9;
+
+        const points = data.map((value, i) => {
+            const r = radius * (value / maxVal);
+            const angle = (i * 2 * Math.PI / data.length) - (Math.PI / 2);
+            return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
+        }).join(' ');
+
+        document.getElementById('radarData').setAttribute('points', points);
+    }
+
+    // --- INITIALIZATION & EVENT LISTENERS ---
+    function populateSelect(id, options) {
+      const select = document.getElementById(id);
+      options.forEach(([value, text, className]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = `${value} - ${text}`;
+        if (className) option.className = className;
+        select.appendChild(option);
+      });
+    }
+
+    function applySelectColor(select) {
+      const selectedOption = select.options[select.selectedIndex];
+      select.style.color = '';
+      const colorClass = Array.from(selectedOption.classList).find(c => c.startsWith('opt-'));
+      if (colorClass) {
+        select.style.color = `var(--${colorClass})`;
+      }
     }
 
     function populateExplainer() {
-      const explainer = document.getElementById('explainer');
-      explainer.innerHTML = '<option value="">Search</option>';
-      const mapping = {
-        skill: 'Skill level',
-        motive: 'Motive',
-        opportunity: 'Opportunity',
-        size: 'Size',
-        discovery: 'Ease of discovery',
-        exploit: 'Ease of exploit',
-        awareness: 'Awareness',
-        detection: 'Intrusion detection',
-        confidentiality: 'Loss of Confidentiality',
-        integrity: 'Loss of Integrity',
-        availability: 'Loss of Availability',
-        accountability: 'Loss of Accountability',
-        financial: 'Financial Damage',
-        reputation: 'Reputation Damage',
-        noncompliance: 'Non-compliance',
-        privacy: 'Privacy Violation'
+      const explainerSelect = document.getElementById('explainer');
+      const factorLabels = {
+        ...Object.fromEntries(threatIds.map(id => [id, `Threat Agent Factors: ${document.querySelector(`label[for=${id}]`).textContent}`])),
+        ...Object.fromEntries(vulnIds.map(id => [id, `Vulnerability Factors: ${document.querySelector(`label[for=${id}]`).textContent}`])),
+        ...Object.fromEntries(techIds.map(id => [id, `Technical Impact: ${document.querySelector(`label[for=${id}]`).textContent}`])),
+        ...Object.fromEntries(bizIds.map(id => [id, `Business Impact: ${document.querySelector(`label[for=${id}]`).textContent}`]))
       };
-      for (const [key, label] of Object.entries(mapping)) {
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = label;
-        explainer.appendChild(opt);
-      }
-    }
-
-    function updateExampleNoteFromExplainer() {
-      const explainer = document.getElementById('explainer');
-      const exampleNote = document.querySelector('.example-note');
-      if (!explainer || !exampleNote) return;
-      const selected = explainer.value;
-      if (!selected) {
-        exampleNote.textContent = 'Hmmmm...I will explain this for u ❣️ ^-^';
-        return;
-      }
-      const fieldMapping = {
-        skill: skillOpts,
-        motive: motiveOpts,
-        opportunity: opportunityOpts,
-        size: sizeOpts,
-        discovery: discoveryOpts,
-        exploit: exploitOpts,
-        awareness: awarenessOpts,
-        detection: detectionOpts,
-        confidentiality: confidentialityOpts,
-        integrity: integrityOpts,
-        availability: availabilityOpts,
-        accountability: accountabilityOpts,
-        financial: financialOpts,
-        reputation: reputationOpts,
-        noncompliance: noncomplianceOpts,
-        privacy: privacyOpts
-      };
-      const opts = fieldMapping[selected];
-      if (!opts) {
-        exampleNote.textContent = 'List penjelasan :';
-        return;
-      }
-      const explainerMap = explanations[selected] || {};
-      let lines = [`${selected === 'noncompliance' ? 'Non-compliance' : selected === 'privacy' ? 'Privacy Violation' :
-        selected === 'skill' ? 'Skill level' : selected === 'size' ? 'Size' :
-        selected === 'financial' ? 'Financial Damage' : selected === 'reputation' ? 'Reputation Damage' :
-        selected === 'confidentiality' ? 'Loss of Confidentiality' : selected === 'integrity' ? 'Loss of Integrity' :
-        selected === 'availability' ? 'Loss of Availability' : selected === 'accountability' ? 'Loss of Accountability' :
-        selected === 'discovery' ? 'Ease of discovery' : selected === 'exploit' ? 'Ease of exploit' :
-        selected === 'awareness' ? 'Awareness' : selected === 'detection' ? 'Intrusion detection' : selected}`];
-      for (const [value, desc] of opts) {
-        if (value === 0 && desc === 'N/A') continue;
-        lines.push(`${value} - ${desc}`);
-        if (explainerMap[value]) {
-          lines.push(`${explainerMap[value]}`);
-        }
-      }
-      exampleNote.textContent = lines.join('\n');
-    }
-
-    document.getElementById('explainer').addEventListener('change', updateExampleNoteFromExplainer);
-    populateExplainer();
-    updateExampleNoteFromExplainer();
-
-    [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener('change', () => {
-        calculate();
-        if (!isInitialLoad) {
-          updateUrlWithScoreVector();
-        }
+      
+      Object.entries(factorLabels).forEach(([id, label]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = label;
+        explainerSelect.appendChild(option);
       });
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      [...threatIds,...vulnIds,...techIds,...bizIds].forEach(id => document.getElementById(id).value = 0);
-      calculate();
-      if (!isInitialLoad) {
-        updateUrlWithScoreVector();
-      }
-    });
-
-    if (window.location.search) {
-      window.location.replace(window.location.origin + window.location.pathname);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      parseScoreVectorFromUrl();
-      parseShortHashFromUrl();
-      isInitialLoad = false;
-    });
+    function updateExplainerNote() {
+        const selectedId = document.getElementById('explainer').value;
+        const noteEl = document.querySelector('.example-note');
+        if (!selectedId) {
+            noteEl.innerHTML = 'Hmmmm...I will explain this for u ❣️ ^-^';
+            return;
+        }
 
-    window.addEventListener('hashchange', () => {
-      parseScoreVectorFromUrl();
-      parseShortHashFromUrl();
-    });
+        const factorLevels = factorOptions[selectedId];
+        const detailedExplanations = explanations[selectedId] || {};
 
-    function initDarkMode() {
-      const toggleBtn = document.querySelector('.dark-mode-toggle');
-      const html = document.documentElement;
-      const savedMode = localStorage.getItem('owasp-risk-mode');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedMode === 'dark' || (!savedMode && prefersDark)) {
-        html.setAttribute('data-mode', 'dark');
-        toggleBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        `;
-      }
+        const content = factorLevels
+            .filter(([value, text]) => text !== 'N/A')
+            .map(([value, text]) => {
+                const detail = detailedExplanations[value] ? `<div class="explanation-detail">${detailedExplanations[value]}</div>` : '';
+                return `<div class="explanation-item"><strong>Level ${value}:</strong> ${text}${detail}</div>`;
+            })
+            .join('');
+        
+        noteEl.innerHTML = content;
+    }
+
+    function initTheme() {
+      const toggleBtn = document.getElementById('theme-toggle');
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', savedTheme);
       toggleBtn.addEventListener('click', () => {
-        const currentMode = html.getAttribute('data-mode');
-        const newMode = currentMode === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-mode', newMode);
-        localStorage.setItem('owasp-risk-mode', newMode);
-        if (newMode === 'dark') {
-          toggleBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-          `;
-        } else {
-          toggleBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          `;
-        }
+        const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initDarkMode();
-    });
-
-    function copyFullUrl(element) {
-      const fullVector = buildScoreVector();
-      const encodedFull = encodeQuerySafe(fullVector);
-      const fullUrl = window.location.origin + window.location.pathname + `#owasp-risk-rating=${encodedFull}`;
-      if (!navigator.clipboard) {
-        const textarea = document.createElement('textarea');
-        textarea.value = fullUrl;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      } else {
-        navigator.clipboard.writeText(fullUrl).catch(err => {
-          console.error('Failed to copy full URL: ', err);
-        });
-      }
-      const originalText = element.textContent;
-      element.textContent = 'Copied!';
-      element.style.color = '#00eaff';
-      element.style.fontWeight = '600';
-      element.style.transition = 'all 0.2s ease';
-      setTimeout(() => {
-        element.textContent = originalText;
-        element.style.color = '';
-        element.style.fontWeight = '';
-      }, 1500);
-    }
-
-    function copyShortUrl(element) {
-      const shortVector = buildShortVector();
-      const encodedShort = encodeQuerySafe(shortVector);
-      const shortUrl = window.location.origin + window.location.pathname + `#owasp-risk-rating-short=${encodedShort}`;
-      if (!navigator.clipboard) {
-        const textarea = document.createElement('textarea');
-        textarea.value = shortUrl;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      } else {
-        navigator.clipboard.writeText(shortUrl).catch(err => {
-          console.error('Failed to copy short URL: ', err);
-        });
-      }
-      const originalText = element.textContent;
-      element.textContent = 'Copied!';
-      element.style.color = '#00eaff';
-      element.style.fontWeight = '600';
-      element.style.transition = 'all 0.2s ease';
-      setTimeout(() => {
-        element.textContent = originalText;
-        element.style.color = '';
-        element.style.fontWeight = '';
-      }, 1500);
-    }
-    function applySelectColor(select) {
-      const selected = select.options[select.selectedIndex];
-      if (selected.classList.contains('opt-green')) select.style.color = '#00ff00';
-      else if (selected.classList.contains('opt-blue')) select.style.color = '#60a5fa';
-      else if (selected.classList.contains('opt-yellow')) select.style.color = '#ffca43';
-      else if (selected.classList.contains('opt-orange')) select.style.color = '#ff9100';
-      else if (selected.classList.contains('opt-red')) select.style.color = '#dc2626';
-      else select.style.color = '';
+    function copyToClipboard(text, element) {
+        navigator.clipboard.writeText(text).then(() => {
+            element.classList.add('copied');
+            setTimeout(() => element.classList.remove('copied'), 2000);
+        }).catch(err => console.error('Failed to copy text: ', err));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('select.form-select').forEach(sel => {
-        applySelectColor(sel);
-        sel.addEventListener('change', () => applySelectColor(sel));
+      allFactorIds.forEach(id => populateSelect(id, factorOptions[id]));
+      populateExplainer();
+      createRadarChart();
+      initTheme();
+
+      allFactorIds.forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('change', () => {
+          applySelectColor(el);
+          calculateAndRender();
+          updateBrowserUrl();
+        });
       });
-    });
 
-    function updateShortVectorLink() {
-      const shortVector = buildShortVector();
-      const link = document.getElementById('shortVectorLink');
-      link.textContent = shortVector;
-    }
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        allFactorIds.forEach(id => {
+          const el = document.getElementById(id);
+          el.value = 0;
+          applySelectColor(el);
+        });
+        calculateAndRender();
+        updateBrowserUrl();
+      });
 
-    document.getElementById('scoreVectorLink').addEventListener('click', function(e) {
-      e.preventDefault();
-      copyFullUrl(this);
-    });
+      document.getElementById('explainer').addEventListener('change', updateExplainerNote);
+      
+      const copyHandler = function(event) {
+          event.preventDefault();
+          copyToClipboard(this.href, this);
+      };
+      document.getElementById('scoreVectorLink').addEventListener('click', copyHandler);
+      document.getElementById('shortVectorLink').addEventListener('click', copyHandler);
 
-    document.getElementById('shortVectorLink').addEventListener('click', function(e) {
-      e.preventDefault();
-      copyShortUrl(this);
+      window.addEventListener('hashchange', parseVectorsFromUrl);
+
+      if (!parseVectorsFromUrl()) {
+          calculateAndRender();
+      }
     });
   </script>
 </body>
