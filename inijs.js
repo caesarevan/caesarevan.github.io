@@ -1,4 +1,4 @@
-const COMMANDS={help:"Supported commands: <span class='code'>about</span>, <span class='code'>experience</span>, <span class='code'>skills</span>, <span class='code'>contact</span>, <span class='code'>secret</span>, <span class='code'>history</span>, <span class='code'>history</span>, <span class='code'>clear</span.<br><br>",
+const COMMANDS={help:"Supported commands: <span class='code'>about</span>, <span class='code'>experience</span>, <span class='code'>skills</span>, <span class='code'>contact</span>, <span class='code'>secret</span>, <span class='code'>history</span>, <span class='code'>clear</span.<br><br>",
 
 about:
 "Hi!...I'm Caesar Evan Santoso, i'm a Penetration Tester & Part Time Bug Bounty Hunter<br><br>",
