@@ -1,0 +1,495 @@
+<!--Tugas UTS - Pemograman Web I-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CV - Caesar Evan Santoso</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.08);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid #0f172a;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 38px;
+            color: #0f172a;
+        }
+
+        header h2 {
+            font-size: 18px;
+            color: #475569;
+            margin-top: 5px;
+        }
+
+        .profile-img {
+            width: 180px;
+            border-radius: 20%;
+            margin-bottom: 15px;
+        }
+
+        .contact {
+            margin-top: 15px;
+        }
+
+        .contact span {
+            margin: 0 10px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        section h3 {
+            color: #0f172a;
+            border-left: 5px solid #2563eb;
+            padding-left: 12px;
+            margin-bottom: 15px;
+        }
+
+        .item {
+            margin-bottom: 18px;
+        }
+
+        .item h4 {
+            display: inline-block;
+            font-size: 18px;
+        }
+
+        .item span {
+            float: right;
+            color: #64748b;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+        }
+
+        .skills {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #0f172a;
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .gallery img {
+            width: 200px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+
+        @media(max-width:768px){
+
+            .container {
+                padding: 20px;
+            }
+
+            .skills {
+                grid-template-columns: 1fr;
+            }
+
+            .item span {
+                float: none;
+                display: block;
+            }
+
+            .contact span {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .gallery img {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<!-- Tag Body sebagai tempat seluruh konten halaman -->
+<body>
+
+    <!-- Tag Div sebagai container utama CV -->
+    <div class="container">
+
+        <!-- Tag Header untuk identitas utama -->
+        <header>
+
+            <!-- Tag Image untuk menampilkan foto profil -->
+            <img src="https://akademik.unsia.ac.id/uploads/asiacyberuniversity/fotomhs/thumb/250401010457.png"
+                alt="Caesar Evan Santoso"
+                class="profile-img">
+
+            <!-- Tag Heading 1 untuk nama & nim -->
+            <h1>CAESAR EVAN SANTOSO | 250401010457</h1>
+
+            <!-- Tag Heading 2 untuk profesi -->
+            <h2>Penetration Tester | Cyber Security Enthusiast</h2>
+
+            <!-- Tag Div untuk kelompok informasi kontak -->
+            <div class="contact">
+
+                <!-- Tag Span untuk teks kontak -->
+                <span>
+                    caesarevan23@gmail.com |
+                    +6281387029716 |
+
+                    <!-- Tag Anchor (Link) menuju website pribadi -->
+                    <a href="https://caesarevan.github.io" target="_blank">
+                        caesarevan.github.io
+                    </a>
+
+                    | Jakarta, Indonesia
+                </span>
+
+            </div>
+
+        </header>
+
+        <!-- Tag Section untuk ringkasan profil -->
+        <section>
+
+            <!-- Tag Heading 3 untuk judul section -->
+            <h3>Summary</h3>
+
+            <!-- Tag Paragraph -->
+            <p>
+                I am a
+
+                <!-- Tag Strong untuk penekanan teks penting -->
+                <strong>Penetration Tester</strong>
+
+                with experience in
+
+                <!-- Tag Bold -->
+                <b>Web Application</b>,
+                <b>Mobile Application</b>,
+                <b>API Security</b>,
+
+                and Infrastructure Security Assessments.
+                I am also active as a
+
+                <!-- Tag Italic -->
+                <i>Bug Hunter</i>
+
+                and vulnerability researcher.
+            </p>
+
+            <!-- Tag Break Line -->
+            <br>
+
+            <!-- Tag Paragraph -->
+            <p>
+                I hold the
+
+                <!-- Tag Mark untuk highlight teks -->
+                <mark>OSCP Certification</mark>
+
+                and have contributed multiple publicly disclosed vulnerabilities through several
+
+                <!-- Tag Underline -->
+                <u>CVE Records</u>.
+
+                I have also received recognition from
+
+                <!-- Tag Emphasis -->
+                <em>Google</em>,
+                <em>Apple</em>,
+
+                and other technology companies for responsible vulnerability disclosure.
+            </p>
+
+        </section>
+
+        <!-- Tag Horizontal Rule -->
+        <hr>
+
+        <!-- Tag Break Line -->
+        <br>
+
+        <!-- Tag Section untuk kumpulan link -->
+        <section>
+
+            <h3>Useful Links</h3>
+
+            <!-- Tag Unordered List -->
+            <ul>
+
+                <!-- Tag List Item -->
+                <li>
+
+                    <!-- Tag Anchor -->
+                    <a href="https://caesarevan.github.io" target="_blank">
+                        Personal Website
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <!-- Tag Anchor -->
+                    <a href="https://github.com" target="_blank">
+                        GitHub
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <!-- Tag Anchor -->
+                    <a href="https://linkedin.com" target="_blank">
+                        LinkedIn
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section pengalaman proyek -->
+        <section>
+
+            <h3>Project Experience</h3>
+
+            <!-- Tag Div untuk item proyek -->
+            <div class="item">
+
+                <!-- Tag Heading 4 -->
+                <h4>PT XXXXXXXXXX, Tbk.</h4>
+
+                <!-- Tag Span -->
+                <span>2024 – 2025</span>
+
+                <!-- Tag Paragraph -->
+                <p>
+
+                    <!-- Tag Strong -->
+                    <strong>Penetration Testing: Website & Mobile Application</strong>
+
+                </p>
+
+                <!-- Tag Unordered List -->
+                <ul>
+
+                    <li>Conduct security assessments on web and mobile applications.</li>
+                    <li>Collect data for further investigation.</li>
+                    <li>Perform remediation validation and recovery recommendations.</li>
+
+                </ul>
+
+            </div>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section pendidikan -->
+        <section>
+
+            <h3>Education</h3>
+
+            <!-- Tag Table -->
+            <table>
+
+                <!-- Tag Table Row -->
+                <tr>
+
+                    <!-- Tag Table Header -->
+                    <th>Institution</th>
+                    <th>Period</th>
+                    <th>Major</th>
+
+                </tr>
+
+                <tr>
+
+                    <!-- Tag Table Data -->
+                    <td>Universitas Siber Asia (UNSIA)</td>
+                    <td>2026 - Present</td>
+                    <td>Teknik Informatika</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>SMK Bina Tunggal Murandika Putra</td>
+                    <td>2017 - 2020</td>
+                    <td>Teknik Komputer dan Jaringan</td>
+
+                </tr>
+
+            </table>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section sertifikasi -->
+        <section>
+
+            <h3>Certifications</h3>
+
+            <!-- Tag Table -->
+            <table>
+
+                <tr>
+                    <th>Certification</th>
+                    <th>Credential ID</th>
+                </tr>
+
+                <tr>
+                    <td>OSCP</td>
+                    <td>88556244</td>
+                </tr>
+
+                <tr>
+                    <td>CEH Master</td>
+                    <td>ECC5093421768</td>
+                </tr>
+
+                <tr>
+                    <td>PT1</td>
+                    <td>686cce0247642fce15ec964b</td>
+                </tr>
+
+            </table>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section keahlian -->
+        <section>
+
+            <h3>Technical Skills</h3>
+
+            <!-- Tag Div dengan class skills -->
+            <div class="skills">
+
+                <div>
+
+                    <h4>Penetration Testing</h4>
+
+                    <ul>
+                        <li>Web Application</li>
+                        <li>Mobile Application</li>
+                        <li>API Security</li>
+                        <li>Infrastructure</li>
+                        <li>Desktop Application</li>
+                        <li>VoIP</li>
+                        <li>AWS Cloud Pentest</li>
+                    </ul>
+
+                </div>
+
+                <div>
+
+                    <h4>Red Teaming</h4>
+
+                    <ul>
+                        <li>Active Directory</li>
+                        <li>Social Engineering</li>
+                        <li>Phishing Campaign</li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section penghargaan -->
+        <section>
+
+            <h3>Honors & Awards</h3>
+
+            <!-- Tag Ordered List -->
+            <ol>
+
+                <li>Helium Challenge Batch 2 - 3rd Place (Score 96)</li>
+                <li>Multiple CVE Records (2025)</li>
+                <li>Google Hall of Fame</li>
+                <li>Apple Web Server Acknowledgements</li>
+                <li>Picky Assist Hall of Fame</li>
+                <li>Glints Hall of Fame</li>
+                <li>Trakteer.id Hall of Fame</li>
+
+            </ol>
+
+        </section>
+
+        <hr><br>
+
+        <!-- Tag Section galeri -->
+        <section>
+
+            <h3>Gallery</h3>
+
+            <!-- Tag Div gallery -->
+            <div class="gallery">
+
+                <!-- Tag Image -->
+                <img src="https://images.credly.com/size/680x680/images/54525e33-85d1-405c-a68c-1e4dd9c7f57f/blob" alt="PT1">
+
+                <!-- Tag Image -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsuAozYmSoYExpAgsmb1a7gNjUwaAj1XckGtnIusCUpw&s" alt="OSCP">
+
+                <!-- Tag Image -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnyRY1xIM-9juQ0QSJeV5P1EPOG1S0e9eyLo3sKpDSAw&s=10" alt="CEH Master">
+
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>
